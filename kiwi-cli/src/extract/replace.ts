@@ -50,7 +50,7 @@ export function updateLangFiles(keyValue, text, validateDuplicate, filePath, typ
   filename = srcFiles.join('/').lastIndexOf('.') === -1 ? srcFiles.join('/') : srcFiles.join('/').substring(0, srcFiles.join('/').lastIndexOf('.'))
   fullKey = keyValue.replace('-', '_');
   const targetFilename = !isDefaultType ? filePath : slash(`${srcLangDir}/${filename}.${isTS ? 'ts' : 'js'}`);
-  const allLangs = getSuggestLangObj()
+  const allLangs = getSuggestLangObj(lang)
   // 当前 key: value 不存在时可创建新文件
   const keyValueIsNot = allLangs[fullKey] === undefined || allLangs[fullKey] !== text
   if (!fs.existsSync(targetFilename) && keyValueIsNot) {
@@ -258,7 +258,7 @@ function replaceInVue(filePath, arg, val) {
   const template = CONFIG.jsTemplate || `i18n.t('{{key}}')`
   const htmlTemplate = CONFIG.htmlTemplate || `$t('{{key}}')`
   const replacedStr = templateTransform(template, { key: val })
-  const htmlReplacedStr = templateTransform(template, { key: val })
+  const htmlReplacedStr = templateTransform(htmlTemplate, { key: val })
   let finalReplaceVal = val
   switch (arg.type) {
     case 'tempStatic':

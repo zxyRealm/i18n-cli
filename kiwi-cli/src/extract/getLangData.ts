@@ -9,9 +9,11 @@ import * as path from 'path';
 import { getProjectConfig, flatten } from '../utils';
 import { readFile } from './file'
 const CONFIG = getProjectConfig();
-const LANG_DIR = path.resolve(CONFIG.kiwiDir, CONFIG.srcLang);
 
-const I18N_GLOB = `${LANG_DIR}/**/*.{ts,js}`;
+const I18N_GLOB = (lang?: string) => {
+  const LANG_DIR = path.resolve(CONFIG.kiwiDir, lang || CONFIG.srcLang);
+  return `${LANG_DIR}/**/*.{ts,js}`;
+} 
 
 /**
  * 获取对应文件的语言
@@ -54,8 +56,8 @@ function expandObject(obj) {
   return newObj
 }
 
-function getI18N() {
-  const paths = globby.sync(I18N_GLOB);
+function getI18N(lang?: string) {
+  const paths = globby.sync(I18N_GLOB(lang));
   const langObj = paths.reduce((prev, curr) => {
     const filename = curr
       .split('/')
@@ -84,8 +86,8 @@ function getI18N() {
 /**
  * 获取全部语言, 展平
  */
-function getSuggestLangObj() {
-  const langObj = getI18N();
+function getSuggestLangObj(lang?: string) {
+  const langObj = getI18N(lang);
   const finalLangObj = flatten(langObj);
   return finalLangObj;
 }

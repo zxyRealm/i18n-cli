@@ -42,13 +42,15 @@ export-*.txt
       "keyIndex": 0,
       "valueIndex": 1
   },
+  "jsTemplate": "I18n.t('{{key}}')", // js/ts 国际化替换模板
+  "htmlTemplate": "$t('{{key}}')", // html 国际化替换模板; 目前仅在 vue 中使用
    // google-translate-open-api 插件配置项
   "translateOptions": {
-       "browersUrl": "https://cors-anywhere.herokuapp.com/", // 默认在线代理地址
-       "browers": true // 是否开在线代理（google翻译存在机器人检测机制，长时间使用会被禁用）
+      "browersUrl": "https://cors-anywhere.herokuapp.com/", // 默认在线代理地址
+      "browers": true // 是否开在线代理（google翻译存在机器人检测机制，长时间使用会被禁用）
   },
   // import 语句，不同项目请自己配置
-  "importI18N": "",
+  "importI18N": "import I18n from '@/locales';",
 
   // 可跳过的文件夹名或者文加名，比如docs、mock等
   // 文件内单行文本添加忽略规则 示例： /* ignore */ 忽略扫描的中文文案
@@ -95,9 +97,16 @@ kiwi --json [excelFilePath] [lang]
 ```
 ### kiwi `--excel`
 
-将语言包按照语言类型导出成单个excel
+将语言包按照语言类型导出成单个excel, 同时也会导出一个全部语言的合并文件all.xlxs
 
+### kiwi `--same`
 
+```
+kiwi --same [originFile] [targetFile] [targetFileValueIndex] [targetFileKeyIndex]
+
+同步excel中相同内容
+
+```
 
 ### kiwi `--compare`
 
