@@ -32,7 +32,7 @@ function sameExcel(originFile: string, targetFile: string, ...restParams: any) {
   const targetData = readSheetData(targetFile, 0, 'obj', keyIndex, valueIndex)
   // 对比后数据结果
   // 默认第二列为中文 第三列为英文，对比中文值，获取其对应的英文值，必同步到源表格中
-  const data = [
+  let data: (string|null)[][] = [
     [`${originFile} key`, `中文`, '英文'],
   ]
   const noValueList = []
@@ -43,6 +43,13 @@ function sameExcel(originFile: string, targetFile: string, ...restParams: any) {
       noValueList.push(item[1])
     }
   })
+
+  const noValueData: (string|null)[][] = noValueList.map(i => {
+    return [null, i, null]
+  })
+
+  data = [...data, ...noValueData ]
+
   const buffer = xlsx.build([{ data }], sheetOptions)
   const filePath = `./excel-sync.xlsx`
   fs.outputFileSync(filePath, buffer)

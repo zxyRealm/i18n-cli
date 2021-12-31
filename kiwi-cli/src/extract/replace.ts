@@ -71,8 +71,8 @@ export function updateLangFiles(keyValue, text, validateDuplicate, filePath, typ
       throw new Error('duplicate');
     }
     
-    if (!keyValueIsNot) return
-    if (allLangs[fullKey] !== text && allLangs[fullKey] !== undefined) {
+    if (!keyValueIsNot && lang !== CONFIG.srcLang) return
+    if (allLangs[fullKey] !== text && allLangs[fullKey] !== undefined && lang !== CONFIG.srcLang) {
       log(chalk.red(`${targetFilename} 已存在 ${fullKey} 的翻译`))
     }
 
