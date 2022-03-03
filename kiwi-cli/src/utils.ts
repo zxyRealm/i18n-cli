@@ -383,6 +383,7 @@ async function processTaskArray (taskArray) {
  */
 function prettierFile(fileContent) {
   const CONFIG = getProjectConfig()
+  console.log('prettier', CONFIG.prettierConfig)
   try {
     return prettier.format(fileContent, {
       parser: 'typescript',
@@ -432,9 +433,6 @@ export {
   flatten,
   lookForFiles,
   replaceOccupyStr,
-  // encodeUtf8,
-  // decodeUtf8,
-  // getRandomStr,
   transformToObject,
   getAllData,
   readSheetData,

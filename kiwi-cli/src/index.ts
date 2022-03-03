@@ -8,7 +8,7 @@ import { importMessages } from './import';
 import { exportExcel } from './excel-export'
 import { compareExcel } from './excel-compare'
 import { findUnUsed } from './unused';
-import { mockLangs } from './mock';
+import { translateExcelLanguage } from './mock';
 import { extractAll } from './extract/extract';
 import { update } from './update'
 import { sameExcel } from './excel-same'
@@ -198,7 +198,9 @@ if (program.unused) {
 if (program.mock) {
   const spinner = ora('使用 Google 翻译中...').start();
   sync(async () => {
-    await mockLangs();
+    console.log('mock', program.mock, program.args)
+    translateExcelLanguage(program.args[0])
+    // await mockLangs();
     spinner.succeed('使用 Google 翻译成功');
   });
 }

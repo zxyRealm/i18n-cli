@@ -7,7 +7,7 @@ import { tsvFormatRows } from 'd3-dsv';
 const sheetOptions = { '!cols': [{ wch: 30 }, { wch: 50 }, { wch: 30 }] }
 
 // 读取 sheet 表中所有 key 值，默认第一列为 key
-function readSheetData (filename, index = 0, type?, keyIndex = 1, valueIndex = 2) {
+export function readSheetData (filename, index = 0, type?, keyIndex = 1, valueIndex = 2) {
   if (!filename) return []
   const sheets = xlsx.parse(filename)
   const dataMap = {}

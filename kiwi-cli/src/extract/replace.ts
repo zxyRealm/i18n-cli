@@ -99,12 +99,14 @@ function addImportToMainLangFile(newFilename, lang?: string) {
   if (lang) {
     mainContent = readFile(`${srcLangDir}/index.${isTs ? 'ts' : 'js'}`)
   } else {
+
     const exportName = newFilename
       .replace(/[-_]/g, '/').split('/')
       .filter(i => i)
       .map(str => {
         return str.substr(0, 1).toLocaleUpperCase() + str.substr(1)
       }).join('')
+
     if (fs.existsSync(filePath)) {
       mainContent = fs.readFileSync(filePath, 'utf8');
       mainContent = mainContent.replace(/^(\s*import.*?;?)$/m, `$1\nimport ${exportName} from './${newFilename}'`);
@@ -117,6 +119,7 @@ function addImportToMainLangFile(newFilename, lang?: string) {
           mainContent = mainContent.replace(/\n(}\))/, `,\n  ...${exportName},\n$1`);
         }
       }
+
       // 兼容 export default { common };的写法
       if (/(};?)/.test(mainContent)) {
         if (/,\n(};?)/.test(mainContent)) {
@@ -127,6 +130,7 @@ function addImportToMainLangFile(newFilename, lang?: string) {
           mainContent = mainContent.replace(/\n(})/, `,\n  ...${exportName},\n$1`);
         }
       }
+
     } else {
       mainContent = `import ${exportName} from './${newFilename}'\n\nexport default {\n ...${exportName},\n}`;
     }

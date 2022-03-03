@@ -45,7 +45,7 @@ function getRandomStr (length:number = 4): string {
 }
 
 // api 文档  https://libretranslate.com/docs/
-export function Translate (text: string, options: Options) {
+export function Translate (text: string, options?: Options, delay?: number) {
   const { appid, secretKey } = options
   const salt = getRandomStr(8)
   const signStr = appid + text + salt + secretKey
@@ -69,16 +69,22 @@ export function Translate (text: string, options: Options) {
         'Content-Type': 'application/json'
       }
     }, (error, response, body) => {
+      const time = delay
       if (error) return reject(error)
         try {
           const result = JSON.parse(body);
           if (result.error_code) {
-            reject(result)
+            setTimeout(() => {
+              reject(result)
+            }, time)
           } else {
             const text = result.trans_result[0].dst
-            resolve(text)
+            setTimeout(() => {
+              resolve(text)
+            },time)
           }
         } catch (error) {
+          reject(error)
           console.error(error)
         }
     })
