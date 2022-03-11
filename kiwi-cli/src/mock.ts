@@ -16,7 +16,6 @@ const fs = require('fs-extra')
 const xlsx = require('node-xlsx').default
 import {
   getProjectConfig,
-  // readSheetData
 } from './utils';
 const CONFIG = getProjectConfig();
 import { readSheetData } from './excel-same'
@@ -149,7 +148,6 @@ async function translateFunction (data) {
   const translateText = await Translate(data[1], CONFIG.translateOptions, 5 * 1000)
   return [data[0], data[1], translateText]
 }
-
 
 async function translateExcelLanguage (filepath) {
   const langList = readExcelInLanguage(filepath)

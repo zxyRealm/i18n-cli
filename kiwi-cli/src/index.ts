@@ -2,7 +2,7 @@
 
 import * as inquirer from 'inquirer';
 import { initProject } from './init';
-import { sync } from './sync';
+// import { sync } from './sync';
 import { exportMessages } from './export';
 import { importMessages } from './import';
 import { exportExcel } from './excel-export'
@@ -171,11 +171,11 @@ if (program.export) {
   });
 }
 
-if (program.sync) {
-  spining('文案同步', () => {
-    sync();
-  });
-}
+// if (program.sync) {
+//   spining('文案同步', () => {
+//     sync();
+//   });
+// }
 
 if (program.update) {
   spining('文案更新', () => {
@@ -197,11 +197,11 @@ if (program.unused) {
 
 if (program.mock) {
   const spinner = ora('使用 Google 翻译中...').start();
-  sync(async () => {
+  if (program.mock === true) {
     console.log('mock', program.mock, program.args)
     translateExcelLanguage(program.args[0])
     spinner.succeed('使用 Google 翻译成功');
-  });
+  }
 }
 
 if (program.extract) {

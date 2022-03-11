@@ -4,9 +4,9 @@ const request = require('request')
 const md5 = require('js-md5');
 const translate = require('translate')
 const googleTranslate = require('@vitalets/google-translate-api')
-// const daiduTranslate = require('baidu-translate-api')
+// const baiduTranslate = require('baidu-translate-api')
 
-function daiduTranslate (text, options = {}) {
+function baiduTranslate (text, options = {}) {
   const { appid = '20210105000663752', secretKey = 'W1uUbJOMvFevPj0OcjG1' } = options
   const salt = getRandomStr(8)
   const signStr = appid + text + salt + secretKey
@@ -46,7 +46,7 @@ function getRandomStr (length = 4) {
   return result
 }
 
-// daiduTranslate('中国').then(res => {
+// baiduTranslate('中国').then(res => {
 //   console.log('baidu translate', res)
 // }).catch(error => {
 //   console.error('error', error)

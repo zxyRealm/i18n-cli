@@ -10,7 +10,7 @@ require('ts-node').register({
 import * as fs from 'fs';
 import * as path from 'path';
 import * as _ from 'lodash';
-import { traverse, getProjectConfig, getLangDir } from './utils';
+import { traverse, getProjectConfig, getLangDir, getProjectDependencies } from './utils';
 const CONFIG = getProjectConfig();
 
 /**
@@ -88,11 +88,18 @@ function translateFile(file, toLang) {
  */
 function sync(callback?) {
   const srcLangDir = getLangDir(CONFIG.srcLang);
+  const dependencies = getProjectDependencies()
+
+  const fileEndWith = dependencies.typescript ? '.ts' : '.js'
+  const allowFiles = [
+    `index${fileEndWith}`,
+    `mock${fileEndWith}`
+  ]
   fs.readdir(srcLangDir, (err, files) => {
     if (err) {
       console.error(err);
     } else {
-      files = files.filter(file => file.endsWith('.ts') && file !== 'index.ts' && file !== 'mock.ts').map(file => file);
+      files = files.filter(file => file.endsWith(fileEndWith) && !allowFiles.includes(file)).map(file => file);
       const translateFiles = toLang =>
         Promise.all(
           files.map(file => {
@@ -103,11 +110,11 @@ function sync(callback?) {
         () => {
           const langDirs = CONFIG.distLangs.map(getLangDir);
           langDirs.map(dir => {
-            const filePath = path.resolve(dir, 'index.ts');
+            const filePath = path.resolve(dir, allowFiles[0]);
             if (!fs.existsSync(dir)) {
               fs.mkdirSync(dir);
             }
-            fs.copyFileSync(path.resolve(srcLangDir, 'index.ts'), filePath);
+            fs.copyFileSync(path.resolve(srcLangDir, allowFiles[0]), filePath);
           });
           callback && callback();
         },
