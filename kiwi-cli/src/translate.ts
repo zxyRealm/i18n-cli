@@ -60,7 +60,6 @@ export function Translate (text: string, options?: Options, delay?: number) {
     sign,
     ...options
   }
-
   return new Promise((resolve, reject) => {
     request({
       url: `http://api.fanyi.baidu.com/api/trans/vip/translate?${qs.stringify(params)}`,

@@ -126,11 +126,11 @@ function readExcelInLanguage (filepath) {
 
 
 // 异步循环
-async function asyncList (list, asyncFunction)  {
+async function asyncList (list, asyncFunction, asyncParams)  {
   const newList = []
   for (let i = 0; i < list.length; i++) {
     try {
-      const res = await asyncFunction(list[i])
+      const res = await asyncFunction(list[i], asyncParams)
       console.log('async data', res)
       newList.push(res)
     } catch(e) {
@@ -142,16 +142,18 @@ async function asyncList (list, asyncFunction)  {
 }
 
 
-async function translateFunction (data) {
+async function translateFunction (data, config?) {
   const CONFIG = getProjectConfig();
   console.log('translate function text', data)
-  const translateText = await Translate(data[1], CONFIG.translateOptions, 5 * 1000)
+  // console.log('translate options ---------', CONFIG.translateOptions, config)
+  const translateText = await Translate(data[1], { ...CONFIG.translateOptions, ...config }, 5 * 1000)
   return [data[0], data[1], translateText]
 }
 
-async function translateExcelLanguage (filepath) {
+async function translateExcelLanguage (filepath, to = 'en', from = 'auto') {
   const langList = readExcelInLanguage(filepath)
-  const translateList = await asyncList(langList, translateFunction)
+  const config = { to, from }
+  const translateList = await asyncList(langList, translateFunction, config)
   createXlsxFile(filepath, translateList)
   return translateList
 }

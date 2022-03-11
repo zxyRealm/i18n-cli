@@ -199,7 +199,7 @@ if (program.mock) {
   const spinner = ora('使用 Google 翻译中...').start();
   if (program.mock === true) {
     console.log('mock', program.mock, program.args)
-    translateExcelLanguage(program.args[0])
+    translateExcelLanguage(program.args[0], program.args[1], program.args[2])
     spinner.succeed('使用 Google 翻译成功');
   }
 }
