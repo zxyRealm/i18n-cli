@@ -200,7 +200,6 @@ if (program.mock) {
   sync(async () => {
     console.log('mock', program.mock, program.args)
     translateExcelLanguage(program.args[0])
-    // await mockLangs();
     spinner.succeed('使用 Google 翻译成功');
   });
 }

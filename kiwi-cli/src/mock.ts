@@ -117,21 +117,11 @@ function createXlsxFile (filepath, sheetData) {
   fs.outputFileSync(filepath, buffer)
 }
 
-function asyncFun (data) {
-  return new Promise((resolve, reject) => {
-    const random = Number((Math.random() * 2).toFixed(1)) + 2
-    setTimeout(() => {
-      const time = new Date().toLocaleString()
-      resolve( `${time} --- ${random}`)
-    }, random * 1000)
-  })
-}
+
 // 翻译 excel 内中文文案
 // 读取excel 内中文
 function readExcelInLanguage (filepath) {
-  console.log('file path', filepath)
   const langs = readSheetData(filepath)
-  console.log('langs', filepath, langs)
   return langs
 }
 
@@ -164,7 +154,6 @@ async function translateFunction (data) {
 async function translateExcelLanguage (filepath) {
   const langList = readExcelInLanguage(filepath)
   const translateList = await asyncList(langList, translateFunction)
-  console.log('list-------------', translateList)
   createXlsxFile(filepath, translateList)
   return translateList
 }

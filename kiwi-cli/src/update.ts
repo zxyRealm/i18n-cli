@@ -60,6 +60,7 @@ function update(file?, lang?) {
   syncKeys()
   const sheetData = readSheetData(file)
   const targetKeys = originKeysList(lang)
+  console.log('sheetData', sheetData, targetKeys)
   if (!targetKeys) return
   targetKeys.forEach(item => {
     Object.keys(item.keys).forEach(key => {
