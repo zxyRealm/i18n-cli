@@ -11,7 +11,6 @@ function baiduTranslate (text, options = {}) {
   const salt = getRandomStr(8)
   const signStr = appid + text + salt + secretKey
   const sign = md5(signStr)
-  console.log('sign', sign, signStr)
   const params = {
     q: text,
     from: 'auto',
@@ -21,7 +20,6 @@ function baiduTranslate (text, options = {}) {
     sign,
     ...options
   }
-  console.log('params', params)
   return new Promise((resolve, reject) => {
     request({
       url: `http://api.fanyi.baidu.com/api/trans/vip/translate?${qs.stringify(params)}`,
@@ -55,7 +53,6 @@ function getRandomStr (length = 4) {
 function asyncFunc (i) {
   return new Promise((resolve, reject) => {
     const randomTime = (parseInt((Math.random() * 10)) + 5) * 100
-    console.log('random time', randomTime)
     setTimeout(() => {
       randomTime <= 1400 ? resolve((i * 2) + 'async') : reject()
     }, randomTime)
@@ -117,24 +114,17 @@ const g = function(){
 });
 }
  
-// g().then((e)=>{
-// 	console.log(e);
-// });
-// console.log('all result ', asyncAllResult)
-
-// translate('中共', {
-//   engine: 'libre',
-//   from: 'zh',
-//   to: 'en'
-// }).then((val) => {
-//   console.log('translate text', val)
-// }
 const package = require('../package.json')
 
-// console.log('package.json', typeof package, package.dependencies)
-// console.log('google translate', translate.getAllLanguage())
 googleTranslate('中', { tld: 'cn', form: 'zh-CN', to: 'en' }).then(res => {
-  console.log('google translate', res)
+  // console.log('google translate', res)
 }).catch(error => {
   console.error(error)
 })
+
+
+const testList = [[1,2], [1,3], [2,3],[1,2], [2,4], [2,5], [2,4]]
+
+testList.sort((a) => Number(a[0] === a[1]))
+
+console.log('testList', testList)

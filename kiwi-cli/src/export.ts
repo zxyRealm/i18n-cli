@@ -45,13 +45,12 @@ function createXlsxFile (filename, sheetData) {
 }
 
 // 导出未翻译的 key: value 值
-function exportMessages(file?: string, lang?: string) {
+function exportMessages(lang?: string, file?: string) {
   const CONFIG = getProjectConfig();
   const langs = lang ? [lang] : CONFIG.distLangs;
   const allMessages = getAllMessages(CONFIG.srcLang);
   // 默认判断中文
   const zhCnMessages = getAllMessages(CONFIG.zhLang)
-  // console.log('all message', zhCnMessages)
   langs
     .filter(item => ![CONFIG.srcLang, CONFIG.zhLang].includes(item))
     .forEach(l => {
@@ -65,14 +64,15 @@ function exportMessages(file?: string, lang?: string) {
       const messagesToTranslate = Object.keys(allMessages)
         .filter(key => {
           const curText = currentMessages[key]
-          const text = allMessages[key]
-          const unTranslate = curText === undefined || DOUBLE_BYTE_REGEX.test(curText) || (DOUBLE_BYTE_REGEX.test(curText) && curText === text)
+          // const text = allMessages[key]
+          const zhText = zhCnMessages[key]
+          const unTranslate = curText === undefined || DOUBLE_BYTE_REGEX.test(curText) || (DOUBLE_BYTE_REGEX.test(curText) && curText === zhText)
           return unTranslate
         })
         .map(key => {
           let message = allMessages[key];
           message = JSON.stringify(message).slice(1, -1);
-          return [key, message];
+          return [key, message, zhCnMessages[key]];
         });
 
       if (messagesToTranslate.length === 0) {

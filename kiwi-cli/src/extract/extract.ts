@@ -65,7 +65,6 @@ function getAllAsyncResults (list, func, formatArgs = val => val) {
           index++
           const delayTime = formatArgs(list[index]).length > 25 ? 3000 : 1200
           setTimeout(() => {
-            console.log('-------', index, Date.now() - lastTime)
             lastTime = Date.now()
             recursive(index)
           }, delayTime)
@@ -132,7 +131,6 @@ function extractAll(dirPath?: string) {
         const getStrings = async () => {
           const includeKeyList = [];
           for (const curr of targetStrings) {
-            console.log('curr', fileName, Date.now() - start, curr.text)
             // 判断已有语言文件是否存在相同的中文信息，如果存在返回对应的 key
             const key = findMatchKey(finalLangObj, curr.text);
             // 原文件或者已翻译的内容中如果存在当前要翻译的中文文本，则直接取用已有的 key 值

@@ -30,6 +30,7 @@ function spining(text, callback) {
     text: `${text}中...`,
     color: 'green'
   }).start();
+
   const timer = setInterval(() => {
     if (spinner.isSpinning) {
       spinner.text = `${text}中...`
@@ -119,7 +120,7 @@ if (program.same) {
       console.log('请按格式输入：--same originFile targetFile [targetFileValueIndex] [targetFileKeyIndex]');
     } else if (program.args) {
       const [targetFile, ...rest] = program.args
-      console.log('args-----', program.args, program.same)
+      // console.log('args-----', program.args, program.same)
       sameExcel(program.same, targetFile, ...rest);
     }
   })
@@ -139,14 +140,11 @@ program
   .option('-l --lang [lang]', '导出语言文件类型')
   .action((cmd) => {
     console.log('cmd', cmd)
-    // return
-    // exportExcel(program.args.length && program.excel, program.args && program.args[0])
   })
 
 if (program.excel) {
   spining('导出 excel', () => {
     console.log('args', program.args)
-    // return
     exportExcel(program.args.length && program.excel, program.args && program.args[0])
   });
 }
@@ -198,7 +196,6 @@ if (program.unused) {
 if (program.mock) {
   const spinner = ora('使用 Google 翻译中...').start();
   if (program.mock === true) {
-    console.log('mock', program.mock, program.args)
     translateExcelLanguage(program.args[0], program.args[1], program.args[2])
     spinner.succeed('使用 Google 翻译成功');
   }

@@ -131,7 +131,6 @@ async function asyncList (list, asyncFunction, asyncParams)  {
   for (let i = 0; i < list.length; i++) {
     try {
       const res = await asyncFunction(list[i], asyncParams)
-      console.log('async data', res)
       newList.push(res)
     } catch(e) {
       console.error(e)
@@ -144,8 +143,6 @@ async function asyncList (list, asyncFunction, asyncParams)  {
 
 async function translateFunction (data, config?) {
   const CONFIG = getProjectConfig();
-  console.log('translate function text', data)
-  // console.log('translate options ---------', CONFIG.translateOptions, config)
   const translateText = await Translate(data[1], { ...CONFIG.translateOptions, ...config }, 5 * 1000)
   return [data[0], data[1], translateText]
 }

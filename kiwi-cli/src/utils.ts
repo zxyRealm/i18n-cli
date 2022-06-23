@@ -107,7 +107,7 @@ function getAllMessages(lang?: string, filter = (message: string, key: string) =
     let files = readFiles(srcLangDir, /\.(js|ts)$/)
     return getAllData(files, filter)
   } catch (error) {
-    log(chalk.red(error))
+    // log(chalk.red(error))
     return {}
   }
 }
@@ -163,27 +163,17 @@ function translateText (text, toLang) {
   const delayFun = (callback) => {
     const breakTime = Date.now() - startTime;
     const delay = breakTime < minBreakTime ? minBreakTime - breakTime : 0;
-    console.log('break time ++++++', minBreakTime, breakTime, delay)
     setTimeout(() => {
       callback && callback()
     }, delay)
   }
   return new Promise((resolve, reject) => {
     Translate(text, options).then((res: translateResponseType) => {
-      // let translatedText = res.trans_result[0].dst
       delayFun(() => resolve(res))
-      // const breakTime = Date.now() - startTime;
-      // const delay = breakTime < minBreakTime ? minBreakTime - breakTime : 0;
-      // console.log('break time ++++++', minBreakTime, breakTime, delay)
-      // setTimeout(() => {
-      //   resolve(res)
-      // }, delay)
-      // resolve(translatedText)
     }).catch(error => {
       log(chalk.red(error))
       log('translate error', chalk.red(`error code ${error.errno || error.error_code}`, error.errmsg || error.error_msg))
       delayFun(() => reject(error))
-      // reject(error)
     });
   })
 }
@@ -383,7 +373,6 @@ async function processTaskArray (taskArray) {
  */
 function prettierFile(fileContent) {
   const CONFIG = getProjectConfig()
-  console.log('prettier', CONFIG.prettierConfig)
   try {
     return prettier.format(fileContent, {
       parser: 'typescript',

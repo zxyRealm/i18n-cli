@@ -33,6 +33,8 @@ interface Config {
     excelOptions: {
       keyIndex: number;
       valueIndex: number;
+      sortOriginIndex?: number;
+      sortTargetIndex?: number
     }
     importI18N: string;
     exclude?: string | RegExp | (string | RegExp)[];
@@ -82,7 +84,9 @@ export const PROJECT_CONFIG: Config = {
     },
     excelOptions: {
       keyIndex: 0,
-      valueIndex: 1
+      valueIndex: 1,
+      // sortOriginIndex: 1,
+      // sortTargetIndex: 2
     },
     prettierConfig: {},
     importI18N: `import i18n from '@/locale';`,

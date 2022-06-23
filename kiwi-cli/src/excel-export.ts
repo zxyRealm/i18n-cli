@@ -22,8 +22,9 @@ const sheetHeader = (lang?: string) => {
     '译文'
   ]
 }
+
 // 列宽设置
-const sheetOptions = { '!cols': [{ wch: 30 }, { wch: 50 }, { wch: 30 }] }
+const sheetOptions = { '!cols': [{ wch: 30 }, { wch: 40 }, { wch: 40 }, { wch: 40 }, { wch: 40 }] }
 
 // 遍历语言包文件
 function exportExcel (langDir?: string, lang?: string) {
@@ -34,6 +35,7 @@ function exportExcel (langDir?: string, lang?: string) {
   const langDirLength:number = langDir.split('/').filter(i => i && i !== '.').length
   // 语言文件名称列表
   const excelList = directory.filter(dir => !/\.[a-zA-Z-_\d]+$/.test(dir))
+
   dirs.readFiles(langDir, {
     match: /\.(js|ts|json)$/
   }, (error, content, next) => {
@@ -54,11 +56,12 @@ function exportExcel (langDir?: string, lang?: string) {
         }
       })
       const allDataList = []
+
       Object.keys(langObj).forEach(langName => {
         if (lang && !langObj[lang]) {
           return log(chalk.red(`${lang} 语言文件不存在，请从 ${excelList.join('|')} 中选取`))
         }
-        const dataObj = getAllData( langObj[lang] || langObj[langName])
+        const dataObj = getAllData(langObj[lang] || langObj[langName])
         if (lang) {
           if (langObj[lang]) createXlsxFile(langName, dataObj) 
         } else {
@@ -66,14 +69,16 @@ function exportExcel (langDir?: string, lang?: string) {
           allDataList.push(dataObj)
         }
       })
-
+      
       createXlsxFile('all', ...allDataList)
   })
 }
 
 // 根据原文件目录结构生成新文件目录
 function createXlsxFile (filename, ...sheetData) {
-  const data = [ sheetHeader() ]
+  const CONFIG = getProjectConfig();
+  const { sortOriginIndex, sortTargetIndex } = CONFIG.excelOptions
+  let data = [ sheetHeader() ]
   const newRootDir = './export-excel'
   Object.keys(sheetData[0]).forEach(key => {
     if (key) {
@@ -81,6 +86,11 @@ function createXlsxFile (filename, ...sheetData) {
       data.push([key, ...dataList(key)])
     }
   })
+
+  if (filename === 'all' && sortOriginIndex && sortTargetIndex) {
+    data = data.sort((a) => a[sortOriginIndex] === a[sortTargetIndex] ? 1 : -1)
+  }
+
   const buffer = xlsx.build([{ data }], sheetOptions)
   const filePath = `${newRootDir}/${filename}.xlsx`
   fs.outputFileSync(filePath, buffer)

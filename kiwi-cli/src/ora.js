@@ -9,7 +9,6 @@ function processSpinner (text, callback) {
     // total: 100,
     interval: 50,
     prefixText: (...args) => {
-      console.log('this is arguments', args)
       return ' !!!!! 哈哈哈哈哈'
     }
   }).start()
