@@ -2,7 +2,6 @@ import * as md5 from 'js-md5'
 import * as translate from 'translate'
 import * as qs from 'qs'
 const request = require('request')
-const googleTranslate = require('@vitalets/google-translate-api')
 // import { getRandomStr, encodeUtf8 } from './utils'
 // Thanks libretranslate.com free translate service
 // api address: https://libretranslate.com/docs/

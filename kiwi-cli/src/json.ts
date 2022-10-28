@@ -58,7 +58,7 @@ function updateOtherLangFile (allTexts, dir: string, excelFilePath: string, lang
 // 替换 json 中的中文
 function replaceInJson (code, arg, val) {
   const { start, end } = arg.range
-  let finalReplaceVal = `'${val}'`
+  let finalReplaceVal = `"${val}"`
   return `${code.slice(0, start)}${finalReplaceVal}${code.slice(end)}`;
 }
 

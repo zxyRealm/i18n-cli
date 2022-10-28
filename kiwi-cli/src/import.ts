@@ -9,6 +9,7 @@ require('ts-node').register({
     module: 'commonjs'
   }
 });
+
 import * as fs from 'fs';
 import * as path from 'path';
 import * as _ from 'lodash';
