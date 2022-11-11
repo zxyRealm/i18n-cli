@@ -103,10 +103,10 @@ if (program.compare) {
 if (program.json) {
   spining('JSON 文件中文文本扫描', () => {
     if (program.json === true) {
-      console.log('请按格式输入：--json originFile');
+      console.log('请按格式输入：--json [path] [originFile] [lang]');
     } else {
       if (program.args[0] && !program.args[1]) {
-        console.log(chalk.red(`请按格式输入：--json [originFile] [lang]`))
+        console.log(chalk.red(`请按格式输入：--json [path] [originFile] [lang]`))
       }
       JsonScanner(program.json, ...program.args);
     }
@@ -120,7 +120,6 @@ if (program.same) {
       console.log('请按格式输入：--same originFile targetFile [targetFileValueIndex] [targetFileKeyIndex]');
     } else if (program.args) {
       const [targetFile, ...rest] = program.args
-      // console.log('args-----', program.args, program.same)
       sameExcel(program.same, targetFile, ...rest);
     }
   })
@@ -216,15 +215,12 @@ program
   .action((cmd) => {
     program.outputHelp()
     console.log(`  ` + chalk.red(`Unknown command ${chalk.yellow(cmd)}.`))
-    console.log()
     suggestCommands(cmd)
   })
 
 // add some useful info on help
 program.on('--help', () => {
-  console.log()
   console.log(`  Run ${chalk.cyan(`kiwi <command> --help`)} for detailed usage of given command.`)
-  console.log()
 })
 
 function suggestCommands (unknownCommand) {

@@ -205,7 +205,6 @@ function extractAll(dirPath?: string) {
             log(chalk.green(`${fileName}替换完成！`));
           })
           .catch(e => {
-            log(chalk.red(e.message));
           });
       } catch(error) {
         log(chalk.red((error && typeof error === 'object' && JSON.stringify(error)) || error))

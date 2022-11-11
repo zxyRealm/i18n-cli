@@ -67,7 +67,7 @@ export function updateLangFiles(keyValue, text, validateDuplicate, filePath, typ
     }
 
     if (validateDuplicate && _.get(obj, fullKey) !== undefined) {
-      log(chalk.red(`${targetFilename} 中已存在 key 为 \`${fullKey}\` 的翻译，请重新命名变量`));
+      // log(chalk.red(`${targetFilename} 中已存在 key 为 \`${fullKey}\` 的翻译，请重新命名变量`));
       throw new Error('duplicate');
     }
     

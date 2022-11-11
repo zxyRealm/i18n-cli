@@ -75,7 +75,6 @@ function readFiles(dir, match?) {
         }
       });
     } catch (error) {
-      // console.error('read dir', error)
     }
   }
   readFile(dir)

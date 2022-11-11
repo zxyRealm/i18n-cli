@@ -71,10 +71,6 @@ function getI18N(lang?: string) {
     const fileContent = expandObject(getLangData(curr));
     let jsObj = fileContent;
 
-    if (Object.keys(jsObj).length === 0) {
-      console.log(`\`${curr}\` 解析失败，该文件包含的文案无法自动补全`);
-    }
-
     return {
       ...prev,
       ...jsObj

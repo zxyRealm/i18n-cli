@@ -10,13 +10,13 @@ const log = console.log;
 const CONFIG = getProjectConfig();
 
 // 导出中文 excel
-function exportTextsExcel (allTexts) {
+function exportTextsExcel(allTexts) {
   // 构建 excel 数据结构
   const sheetData = []
   const keyMap = {}
   let total = 0
   allTexts.length && allTexts.forEach((file) => {
-    total+= file?.texts?.length || 0
+    total += file?.texts?.length || 0
     file.texts && file.texts.forEach((texts) => {
       if (!keyMap[texts.text]) {
         sheetData.push([null, texts.text])
@@ -27,7 +27,7 @@ function exportTextsExcel (allTexts) {
     })
   })
   const content = tsvFormatRows(sheetData)
-  if (sheetData.length > 1) { 
+  if (sheetData.length > 1) {
     createXlsxFile(`export-json_${getProjectVersion() || ''}`, sheetData)
     fs.writeFileSync(`export-json.txt`, content);
     log(chalk.green(`excel 导出成功, 总计 ${total} 条，去重后${sheetData.length - 1} 条`))
@@ -37,7 +37,7 @@ function exportTextsExcel (allTexts) {
 }
 
 // 根据中文 json 文件，生成指定语言的其他语言文件
-function updateOtherLangFile (allTexts, dir: string, excelFilePath: string, lang: string): void {
+function updateOtherLangFile(allTexts, dir: string, excelFilePath: string, lang: string): void {
   // 读取语言 excel 生成 以中文为 key 的 map 对象
   const sheetData = readSheetData(excelFilePath);
   const prePath = dir.replace(/(.*)\/$/, '$1')
@@ -56,15 +56,15 @@ function updateOtherLangFile (allTexts, dir: string, excelFilePath: string, lang
 }
 
 // 替换 json 中的中文
-function replaceInJson (code, arg, val) {
+function replaceInJson(code, arg, val) {
   const { start, end } = arg.range
-  let finalReplaceVal = `"${val}"`
+  let finalReplaceVal = `'${val.replace(/[\\"']/g, '\\$&')}'`
   return `${code.slice(0, start)}${finalReplaceVal}${code.slice(end)}`;
 }
 
 
 // 扫描 json 文件中的中文文案
-function ExtractJsonInText (dir: string, excelFilePath?: string, lang?: string) {
+function ExtractJsonInText(dir: string, excelFilePath?: string, lang?: string) {
   const start = Date.now()
   // const langPath = `${dir}/${CONFIG.srcLang}`
   const files = getSpecifiedFiles(dir, CONFIG.include);
@@ -77,7 +77,7 @@ function ExtractJsonInText (dir: string, excelFilePath?: string, lang?: string) 
     const texts = findTextInTs(code, file, true);
     // 调整文案顺序，保证从后面的文案往前替换，避免位置更新导致替换出错
     const sortTexts = _.sortBy(texts, obj => -obj.range.start);
-    
+
     if (texts.length > 0) {
       log(chalk.green(`${file} 发现中文文案 ${texts.length} 条`));
     }

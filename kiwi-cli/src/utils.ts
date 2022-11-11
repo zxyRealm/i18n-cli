@@ -107,7 +107,6 @@ function getAllMessages(lang?: string, filter = (message: string, key: string) =
     let files = readFiles(srcLangDir, /\.(js|ts)$/)
     return getAllData(files, filter)
   } catch (error) {
-    // log(chalk.red(error))
     return {}
   }
 }

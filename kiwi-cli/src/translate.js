@@ -44,11 +44,7 @@ function getRandomStr (length = 4) {
   return result
 }
 
-// baiduTranslate('中国').then(res => {
-//   console.log('baidu translate', res)
-// }).catch(error => {
-//   console.error('error', error)
-// })
+
 
 function asyncFunc (i) {
   return new Promise((resolve, reject) => {
@@ -84,17 +80,11 @@ function getAllAsyncResults (list, func) {
   })
 }
 
-// getAllAsyncResults(List).then(res => {
-//   console.log('all result', res)
-// }).catch(e => {
-//   console.error(e)
-// })
 
 let list=["a12", "b13", "c13", "d13", "e13"];
 const p = function(num){
   return new Promise((resolve, reject) => {
     setTimeout(() => { 	
-      console.log(">>>>>"+num);
       resolve("ok"+num);
   	}, 1000)
  	})
@@ -127,4 +117,3 @@ const testList = [[1,2], [1,3], [2,3],[1,2], [2,4], [2,5], [2,4]]
 
 testList.sort((a) => Number(a[0] === a[1]))
 
-console.log('testList', testList)

@@ -195,7 +195,6 @@ export function filterAttrsText(attrsMap: object) {
       } else if (value.match(matchExpReg())) {
         return filterGlobalStr(text, tStart)
       }
-      console.error(attrObj)
       return []
     } else {
       const valEnd = end - 1
