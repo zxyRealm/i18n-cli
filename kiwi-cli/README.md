@@ -6,8 +6,6 @@ Kiwi 的 CLI 工具
 
 > yarn global add uniubi-kiwi-clis
 
-
-
 > 推荐与[🐤 Kiwi-国际化全流程解决方案](https://github.com/alibaba/kiwi)结合使用
 
 ```txt
@@ -60,8 +58,6 @@ export-*.txt
 }
 ```
 
-
-
 ### kiwi `--extract`
 
 一键批量替换指定文件夹下的所有文案
@@ -72,10 +68,7 @@ kiwi --extract [dirPath]
 
 ![批量替换](https://raw.githubusercontent.com/alibaba/kiwi/master/kiwi-cli/public/extract.gif)
 
-
-
 > 长时间使用会存在 google 翻译被禁用的情况， 如出现 429 等错误。 此时的处理方式可以选择关闭在线代理或者更换在线代理地址
-
 
 ### kiwi `--export`
 
@@ -87,6 +80,7 @@ kiwi --export [filePath] en-US
 导出未翻译的文案
 
 ### kiwi `--json`
+
 ```
 # 导出 json 数据中文文案
 kiwi --json
@@ -101,9 +95,10 @@ excelFilePath: 已翻译的excel文件
 lang: 需要替换的语言类型
 
 ```
+
 ### kiwi `--excel`
 
-将语言包按照语言类型导出成单个excel, 同时也会导出一个全部语言的合并文件all.xlxs
+将语言包按照语言类型导出成单个 excel, 同时也会导出一个全部语言的合并文件 all.xlxs
 
 ### kiwi `--same`
 
@@ -118,14 +113,10 @@ kiwi --same [originFile] [targetFile] [targetFileValueIndex] [targetFileKeyIndex
 
 根据导出的 excel, 对比不同语言类型和基础语言包之间的差异
 
-
-
-### kiwi  `--update`
+### kiwi `--update`
 
 ```
 # 优先同步源语言包与其他语言包的 key: value 映射关系，根据 excel 更新语言包中 key 对应的 value 值，默认会先将其他语言包中 key 与基础语言包进行一次同步处理
 kiwi --update [filePath] [lang]
 
 ```
-
-
