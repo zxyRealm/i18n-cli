@@ -92,7 +92,13 @@ kiwi --export [filePath] en-US
 kiwi --json
 
 # 更新语言文件
-kiwi --json [excelFilePath] [lang]
+kiwi --json [path] [excelFilePath] [lang]
+
+path: 需要扫描的json 文件目录
+
+excelFilePath: 已翻译的excel文件
+
+lang: 需要替换的语言类型
 
 ```
 ### kiwi `--excel`
