@@ -51,7 +51,7 @@ function findAllChineseText(dir: string) {
 }
 
 // promise 链式调用
-function getAllAsyncResults (list, func, formatArgs = val => val) {
+function getAllAsyncResults(list, func, formatArgs = val => val) {
   return new Promise((resolve, reject) => {
     let results = []
     let index = 0
@@ -78,7 +78,7 @@ function getAllAsyncResults (list, func, formatArgs = val => val) {
 }
 
 // 将对象的 key: value 颠倒
-function reverseObjectKeyValue (obj) {
+function reverseObjectKeyValue(obj) {
   if (!obj) return {}
   const newObject = {}
   return Object.keys(obj).reduce((pre, curr) => {
@@ -114,105 +114,105 @@ function extractAll(dirPath?: string) {
   const virtualMemory = {};
   const start = Date.now();
   // 转换成异步任务列表
-  const taskList  = async () => {
+  const taskList = async () => {
     for (const item of allTargetStrings) {
 
-    // 文件名
-    const fileName = item.file
-    // 中文文案列表
-    const targetStrings = item.texts;
+      // 文件名
+      const fileName = item.file
+      // 中文文案列表
+      const targetStrings = item.texts;
 
-    const pathList = slash(fileName).replace(/(.+)\.[a-zA-Z]+$/, '$1').split('/');
-    const suggestion = pathList.slice(pathList.findIndex(i => i === 'src') + 1);
-    
-    const subTasks = () => new Promise(async (resolve, reject) => {
-      try {
-        // 填充翻译得到的 key 值
-        const getStrings = async () => {
-          const includeKeyList = [];
-          for (const curr of targetStrings) {
-            // 判断已有语言文件是否存在相同的中文信息，如果存在返回对应的 key
-            const key = findMatchKey(finalLangObj, curr.text);
-            // 原文件或者已翻译的内容中如果存在当前要翻译的中文文本，则直接取用已有的 key 值
-            if (key) {
-              virtualMemory[curr.text] = key;
-              includeKeyList.push({
-                target: curr,
-                key
-              })
-            } else if (!virtualMemory[curr.text]) {
-              try {
-                const uuidKey = `${randomstring.generate({
-                  length: 8,
-                  charset: 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
-                })}`;
-                // 翻译后文本
-                // let englishText;
-                const englishText = await translateText(formatText(curr.text), 'en').catch(() =>{}) as string;
-            
-                // 驼峰格式转换
-                const handleText = englishText ? _.camelCase(englishText) : uuidKey;
-                // 对于翻译后的英文再次过滤，只保留英文字符
-                const purifyText = handleText.replace(/[^a-z]/ig, '');
-                const transText = purifyText || 'chineseSymbols';
-                let transKey = `${suggestion.length ? suggestion.join('_') + '_' : ''}${transText}`;
-                let occurTime = 1;
-                // 防止出现翻译后 key 相同, 但是对应的中文文案不同的情况
-                while (
-                  findMatchValue(finalLangObj, transKey) !== curr.text &&
-                  _.keys(finalLangObj).includes(`${transKey}${occurTime >= 2 ? occurTime : ''}`)
-                ) {
-                  occurTime++;
-                }
-                if (occurTime >= 2) {
-                  transKey = `${transKey}${occurTime}`;
-                }
-                virtualMemory[curr.text] = transKey;
-                finalLangObj[transKey] = curr.text;
+      const pathList = slash(fileName).replace(/(.+)\.[a-zA-Z]+$/, '$1').split('/');
+      const suggestion = pathList.slice(pathList.findIndex(i => i === 'src') + 1);
+
+      const subTasks = () => new Promise(async (resolve, reject) => {
+        try {
+          // 填充翻译得到的 key 值
+          const getStrings = async () => {
+            const includeKeyList = [];
+            for (const curr of targetStrings) {
+              // 判断已有语言文件是否存在相同的中文信息，如果存在返回对应的 key
+              const key = findMatchKey(finalLangObj, curr.text);
+              // 原文件或者已翻译的内容中如果存在当前要翻译的中文文本，则直接取用已有的 key 值
+              if (key) {
+                virtualMemory[curr.text] = key;
                 includeKeyList.push({
                   target: curr,
-                  key: transKey
+                  key
                 })
-              } catch(e) {
-                Promise.reject(e);
-                continue;
+              } else if (!virtualMemory[curr.text]) {
+                try {
+                  const uuidKey = `${randomstring.generate({
+                    length: 8,
+                    charset: 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
+                  })}`;
+                  // 翻译后文本
+                  // let englishText;
+                  const englishText = await translateText(formatText(curr.text), 'en').catch(() => { }) as string;
+
+                  // 驼峰格式转换
+                  const handleText = englishText ? _.camelCase(englishText) : uuidKey;
+                  // 对于翻译后的英文再次过滤，只保留英文字符
+                  const purifyText = handleText.replace(/[^a-z]/ig, '');
+                  const transText = purifyText || 'chineseSymbols';
+                  let transKey = `${suggestion.length ? suggestion.join('_') + '_' : ''}${transText}`;
+                  let occurTime = 1;
+                  // 防止出现翻译后 key 相同, 但是对应的中文文案不同的情况
+                  while (
+                    findMatchValue(finalLangObj, transKey) !== curr.text &&
+                    _.keys(finalLangObj).includes(`${transKey}${occurTime >= 2 ? occurTime : ''}`)
+                  ) {
+                    occurTime++;
+                  }
+                  if (occurTime >= 2) {
+                    transKey = `${transKey}${occurTime}`;
+                  }
+                  virtualMemory[curr.text] = transKey;
+                  finalLangObj[transKey] = curr.text;
+                  includeKeyList.push({
+                    target: curr,
+                    key: transKey
+                  })
+                } catch (e) {
+                  Promise.reject(e);
+                  continue;
+                }
+              } else {
+                includeKeyList.push({
+                  target: curr,
+                  key: virtualMemory[curr.text]
+                })
               }
-            } else {
-              includeKeyList.push({
-                target: curr,
-                key: virtualMemory[curr.text]
-              })
             }
-          }
-          return includeKeyList;
-        };
-        const replaceableStrings = await getStrings()
-        // 翻译完成即可继续开始下一个文件翻译处理，无需等待文件的写入完成
-        resolve(true)
-        // 替换源文件中的中文，并将 key: value 值写入语言包文件
-        replaceableStrings
-          .reduce((prev, obj) => {
-            return prev.then(() => {
-              return replaceAndUpdate(fileName, obj.target, `${obj.key}`, false);
+            return includeKeyList;
+          };
+          const replaceableStrings = await getStrings()
+          // 翻译完成即可继续开始下一个文件翻译处理，无需等待文件的写入完成
+          resolve(true)
+          // 替换源文件中的中文，并将 key: value 值写入语言包文件
+          replaceableStrings
+            .reduce((prev, obj) => {
+              return prev.then(() => {
+                return replaceAndUpdate(fileName, obj.target, `${obj.key}`, false);
+              });
+            }, Promise.resolve())
+            .then(() => {
+              // 添加 import I18N
+              if (!hasImportI18N(fileName)) {
+                const code = createImportI18N(fileName);
+                writeFile(fileName, code);
+              }
+              log(chalk.green(`${fileName}替换完成！`));
+            })
+            .catch(e => {
             });
-          }, Promise.resolve())
-          .then(() => {
-            // 添加 import I18N
-            if (!hasImportI18N(fileName)) {
-              const code = createImportI18N(fileName);
-              writeFile(fileName, code);
-            }
-            log(chalk.green(`${fileName}替换完成！`));
-          })
-          .catch(e => {
-          });
-      } catch(error) {
-        log(chalk.red((error && typeof error === 'object' && JSON.stringify(error)) || error))
-        reject(error)
-      }
-    })
-    await subTasks();
-  }
+        } catch (error) {
+          log(chalk.red((error && typeof error === 'object' && JSON.stringify(error)) || error))
+          reject(error)
+        }
+      })
+      await subTasks();
+    }
   }
 
   taskList()

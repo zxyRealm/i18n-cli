@@ -56,7 +56,7 @@ program
   .option('--compare [originFile] [targetFile]', '对比导出 key 差异')
   .option('--same [originFile] [targetFile] [targetFileValueIndex] [targetFileKeyIndex]', '同步excel中相同内容')
   .option('--update [file] [lang]', '更新语言包')
-  .option('--json [file]', 'json 数据中文扫描')
+  .option('--json [path] [langOriginFile] [lang]', 'json 数据中文扫描')
   .option('--dedup', '提取重复文案')
   .option('--sync', '同步各种语言的文案')
   .option('--mock', '使用 Google 翻译')
@@ -143,7 +143,6 @@ program
 
 if (program.excel) {
   spining('导出 excel', () => {
-    console.log('args', program.args)
     exportExcel(program.args.length && program.excel, program.args && program.args[0])
   });
 }
@@ -168,11 +167,7 @@ if (program.export) {
   });
 }
 
-// if (program.sync) {
-//   spining('文案同步', () => {
-//     sync();
-//   });
-// }
+
 
 if (program.update) {
   spining('文案更新', () => {
@@ -223,7 +218,7 @@ program.on('--help', () => {
   console.log(`  Run ${chalk.cyan(`kiwi <command> --help`)} for detailed usage of given command.`)
 })
 
-function suggestCommands (unknownCommand) {
+function suggestCommands(unknownCommand) {
   const availableCommands = program.commands.map(cmd => cmd._name)
 
   let suggestion
@@ -246,7 +241,7 @@ function camelize(str) {
 
 // commander passes the Command object itself as options,
 // extract only actual options into a fresh object.
-function cleanArgs (cmd) {
+function cleanArgs(cmd) {
   const args = {}
   cmd.options.forEach(o => {
     const key = camelize(o.long.replace(/^--/, ''))

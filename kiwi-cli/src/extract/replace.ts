@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import * as ts from 'typescript';
 import { readFile, writeFile } from './file';
 import { getLangData, getSuggestLangObj } from './getLangData';
-import { 
+import {
   getProjectConfig,
   getLangDir,
   getProjectDependencies,
@@ -67,10 +67,10 @@ export function updateLangFiles(keyValue, text, validateDuplicate, filePath, typ
     }
 
     if (validateDuplicate && _.get(obj, fullKey) !== undefined) {
-      // log(chalk.red(`${targetFilename} 中已存在 key 为 \`${fullKey}\` 的翻译，请重新命名变量`));
+      log(chalk.red(`${targetFilename} 中已存在 key 为 \`${fullKey}\` 的翻译，请重新命名变量`));
       throw new Error('duplicate');
     }
-    
+
     if (!keyValueIsNot && lang !== CONFIG.srcLang) return
     if (allLangs[fullKey] !== text && allLangs[fullKey] !== undefined && lang !== CONFIG.srcLang) {
       log(chalk.red(`${targetFilename} 已存在 ${fullKey} 的翻译`))
@@ -86,7 +86,7 @@ export function updateLangFiles(keyValue, text, validateDuplicate, filePath, typ
 
 
 function generateNewLangFile(key, value) {
-  const obj = {[key]: value};
+  const obj = { [key]: value };
 
   return prettierFile(`export default ${JSON.stringify(obj, null, 2)}`);
 }
@@ -95,7 +95,7 @@ function generateNewLangFile(key, value) {
 function addImportToMainLangFile(newFilename, lang?: string) {
   const isTs = getProjectDependencies().typescript
   let mainContent = '';
-  const filePath = `${getLangDir(lang) || srcLangDir}/index.${isTs ? 'ts': 'js'}`
+  const filePath = `${getLangDir(lang) || srcLangDir}/index.${isTs ? 'ts' : 'js'}`
   if (lang) {
     mainContent = readFile(`${srcLangDir}/index.${isTs ? 'ts' : 'js'}`)
   } else {
@@ -195,7 +195,7 @@ function hasImportI18N(filePath) {
 function createImportI18N(filePath) {
   const code = readFile(filePath);
   const ast = ts.createSourceFile('', code, ts.ScriptTarget.ES2015, true, ts.ScriptKind.TSX);
-  
+
   // const isTsFile = _.endsWith(filePath, '.ts') || _.endsWith(filePath, '.js');
   // const isTsxFile = _.endsWith(filePath, '.tsx');
   const isVueFile = _.endsWith(filePath, '.vue');
@@ -294,12 +294,12 @@ function replaceInJsx(filePath, arg, val, callback) {
   let finalReplaceVal = val
   const template = CONFIG.jsTemplate || `intl.formatMessage({ id: '{{key}}' })`
   const replacedStr = templateTransform(template, { key: val })
-  switch(arg.type) {
+  switch (arg.type) {
     case 'jsTemplate': {
       const values = (arg.text?.match(/\$\{(\w+)\}/g) || []).map(key => key.replace(/\$\{(\w+)\}/g, '$1')).join(', ');
       // 更新text 回调
-      callback && callback(arg.text.replace(/\$\{/g,'{'))
-      arg.text = arg.text.replace(/\$\{/g,'{')
+      callback && callback(arg.text.replace(/\$\{/g, '{'))
+      arg.text = arg.text.replace(/\$\{/g, '{')
       // 示例： `姓名${name}, 年龄{age}, 生日${year}` 插值语法中插入值提取 { name, age, year }
       // 差值语法只允许使用直接变量值，不允许使用运算表达式
       finalReplaceVal = !values ? replacedStr : `${replacedStr.slice(0, replacedStr.length - 1)}, { ${values} })`;
@@ -315,7 +315,7 @@ function replaceInJsx(filePath, arg, val, callback) {
       break;
     default:
       finalReplaceVal = replacedStr;
-    break;
+      break;
   }
   return `${code.slice(0, start)}${finalReplaceVal}${code.slice(end)}`;
 }

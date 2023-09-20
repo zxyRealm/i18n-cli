@@ -15,7 +15,7 @@ import * as prettier from 'prettier'
 import * as ts from 'typescript'
 import { readFiles } from './extract/file'
 import * as slash from 'slash2';
-import { Translate }from './translate'
+import { Translate } from './translate'
 const xlsx = require('node-xlsx').default
 const Progress = require('progress')
 const log = console.log
@@ -42,7 +42,7 @@ function lookForFiles(dir: string, fileName: string): string {
   }
 }
 
-function readFile (filename: string) {
+function readFile(filename: string) {
   return fs.readFileSync(filename, { encoding: 'utf8' })
 }
 
@@ -150,7 +150,7 @@ function withTimeout(promise, ms, text) {
 /*
  * 使用google翻译
  */
-function translateText (text, toLang) {
+function translateText(text, toLang) {
   const CONFIG = getProjectConfig();
   const timeout = CONFIG.translateOptions.timeout
   const options: Options = {
@@ -227,7 +227,7 @@ function transformToObject(filename: string, filter?: Function): object {
   function visit(node: ts.Node) {
     switch (node && node.kind) {
       case ts.SyntaxKind.PropertyAssignment: {
-      /** 判断 Ts 中的字符串含有中文 */
+        /** 判断 Ts 中的字符串含有中文 */
         const {
           name,
           initializer
@@ -242,10 +242,10 @@ function transformToObject(filename: string, filter?: Function): object {
     ts.forEachChild(node, visit);
   }
   ts.forEachChild(ast, visit);
-  return keysObject 
+  return keysObject
 }
 
-function getAllData (files: Array<string>, filter = (...arg) => true) {
+function getAllData(files: Array<string>, filter = (...arg) => true) {
   if (!files) return {}
   return files.reduce((prev, curr) => {
     const dataObj = transformToObject(curr, filter)
@@ -257,7 +257,7 @@ function getAllData (files: Array<string>, filter = (...arg) => true) {
 }
 
 // 读取 sheet 表中所有 key 值，默认第一列为 key
-function readSheetData (filename) {
+function readSheetData(filename) {
   if (!filename) return {}
   const config = getProjectConfig()
   const { keyIndex = 0, valueIndex = 1 } = { ...config.excelOptions }
@@ -275,11 +275,35 @@ function readSheetData (filename) {
   return keysObject
 }
 
+// 读取 sheet 表中所有 key 值，默认第一列为 key
+export function readSheetDataArray(filename) {
+  if (!filename) return []
+  const config = getProjectConfig()
+  const { keyIndex = 0, valueIndex = 1 } = { ...config.excelOptions }
+  const sheets = xlsx.parse(filename)
+  const keysArray = []
+  sheets.forEach(sheet => {
+    const { data } = sheet
+    data.slice(1).forEach(row => {
+
+      const isExist = keysArray.find(v => v[0] === row[keyIndex])
+      const val = [row[keyIndex], row[valueIndex]]
+
+      if (isExist) {
+        console.error(`${row[keyIndex]} key 已存在`)
+      } else {
+        keysArray.push(val)
+      }
+    })
+  })
+  return keysArray
+}
+
 // 获取项目 package.json 总 version 信息
 function getProjectVersion() {
   const packageFilePath = `${slash(process.cwd())}/package.json`
   if (fs.existsSync(packageFilePath)) {
-    return JSON.parse(fs.readFileSync(packageFilePath, { encoding: 'utf8'})).version
+    return JSON.parse(fs.readFileSync(packageFilePath, { encoding: 'utf8' })).version
   } else {
     return ''
   }
@@ -328,7 +352,7 @@ function checkTextIsIgnore(code: string, start: number): boolean {
 
 // 读取项目中文件
 type FilepathType = string; // 文件相对根目录路径
-function readProjectFile (filepath: string) {
+function readProjectFile(filepath: string) {
   // 项目根目录
   const rootDir = path.resolve(process.cwd(), `./`);
   const configFile = lookForFiles(rootDir, filepath);
@@ -346,7 +370,7 @@ interface PackageJSONType {
 }
 
 // 获取项目依赖信息 dependencies && devDependencies
-function getProjectDependencies () {
+function getProjectDependencies() {
   const packageJSON: PackageJSONType = readProjectFile('package.json')
   return {
     ...(packageJSON.devDependencies || {}),
@@ -355,7 +379,7 @@ function getProjectDependencies () {
 }
 
 // 线程式处理异步任务数组
-async function processTaskArray (taskArray) {
+async function processTaskArray(taskArray) {
   try {
     for (const item of taskArray) {
       await item?.();
@@ -376,16 +400,17 @@ function prettierFile(fileContent) {
     return prettier.format(fileContent, {
       parser: 'typescript',
       singleQuote: true,
+      fix: true,
       ...(CONFIG.prettierConfig || {})
     });
   } catch (e) {
-    console.error(`代码格式化报错！${e.toString()}\n代码为：${fileContent}`);
+    console.error(`代码格式化报错！${e.toString()}`);
     return fileContent;
   }
 }
 
 // 进度条
-function progressBar (config, name?: string) {
+function progressBar(config, name?: string) {
   const bar = new Progress(`${name || 'extracting'} [:bar] :percent :etas`, {
     complete: '=',
     incomplete: ' ',
@@ -400,10 +425,10 @@ function progressBar (config, name?: string) {
 // const templateStr = 'He is {{name}}'
 // => He is Tom
 
-function templateTransform (template, data) {
+function templateTransform(template, data) {
   return template.replace(/\{\{[^\{\}]+\}\}/g, (matchStr, index) => {
     const key = matchStr.replace(/^\{\{([^\{\}]+)\}\}$/, '$1');
-    return data?.[key] === undefined ? matchStr: data[key]
+    return data?.[key] === undefined ? matchStr : data[key]
   })
 }
 

@@ -1,5 +1,5 @@
 import { findTextInTs } from './extract/findChineseText';
-import { getProjectConfig, getProjectVersion, readSheetData, prettierFile, progressBar } from './utils'
+import { getProjectConfig, getProjectVersion, readSheetData, prettierFile } from './utils'
 import { getSpecifiedFiles, readFile, writeFile } from './extract/file';
 import { createXlsxFile } from './export'
 import * as _ from 'lodash';
@@ -40,19 +40,48 @@ function exportTextsExcel(allTexts) {
 function updateOtherLangFile(allTexts, dir: string, excelFilePath: string, lang: string): void {
   // 读取语言 excel 生成 以中文为 key 的 map 对象
   const sheetData = readSheetData(excelFilePath);
+
   const prePath = dir.replace(/(.*)\/$/, '$1')
   allTexts.forEach((file) => {
     // 更新语言文件的文件名
-    const newFileName = `${prePath}/${lang}${file.file.replace(prePath, '')}`
-    let code = readFile(file.file)
-    file.texts.forEach(text => {
-      if (sheetData[text.text] !== undefined) {
-        code = replaceInJson(code, text, sheetData[text.text])
-      }
-    })
-    writeFile(newFileName, prettierFile(code))
+    const newFileName = `${prePath}/${lang}${file.path.replace(prePath, '')}`
+    let code = JSON.parse(file.code)
+
+    // console.log('code', code, sheetData)
+
+    updateWithTranslation(code, sheetData)
+
+    // console.log('updat code', code)
+    writeFile(newFileName, prettierFile(JSON.stringify(code)))
   })
-  // 
+}
+
+let num = 0
+
+// 处理字符串
+function processString(str, dictionary) {
+  // 使用正则表达式匹配所有的中文字符
+  let reg = /'([^']*)'/g;
+  if (dictionary[str]) return dictionary[str]
+  // 找到所有的中文字符串并使用词典替换
+  const stringList = str?.match(reg)?.map(v => v.slice(1, -1)) || []
+
+  stringList.forEach(v => {
+    dictionary?.[v] ? str = str.replace(v, dictionary[v]) : null
+  })
+
+  return str;
+}
+
+// 更新函数
+function updateWithTranslation(obj, dictionary) {
+  for (let key in obj) {
+    if (typeof obj[key] === 'string') {
+      obj[key] = processString(obj[key], dictionary)
+    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+      updateWithTranslation(obj[key], dictionary);
+    }
+  }
 }
 
 // 替换 json 中的中文
@@ -69,7 +98,8 @@ function ExtractJsonInText(dir: string, excelFilePath?: string, lang?: string) {
   // const langPath = `${dir}/${CONFIG.srcLang}`
   const files = getSpecifiedFiles(dir, CONFIG.include);
   const filterFiles = files.filter(file => {
-    return file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.vue') || file.endsWith('.js') || file.endsWith('.json');
+    // file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.vue') || file.endsWith('.js') ||
+    return file.endsWith('.json');
   });
   // 目录下所有中文文案
   const allTexts = filterFiles.reduce((pre, file) => {
@@ -84,6 +114,16 @@ function ExtractJsonInText(dir: string, excelFilePath?: string, lang?: string) {
     return texts.length > 0 ? pre.concat({ file, texts: sortTexts }) : pre;
   }, []);
 
+  const allFiles = filterFiles.reduce((pre, file) => {
+    const code = readFile(file)
+    return [...pre, {
+      path: file,
+      code
+    }]
+  }, [])
+
+  // console.log('files', allFiles)
+
   if (!allTexts.length) {
     return log(chalk.yellow(`未发现中文文案`))
   }
@@ -91,7 +131,7 @@ function ExtractJsonInText(dir: string, excelFilePath?: string, lang?: string) {
   !excelFilePath && exportTextsExcel(allTexts)
   // 扁平化后的数组列表
   if (excelFilePath && fs.existsSync(excelFilePath)) {
-    updateOtherLangFile(allTexts, dir, excelFilePath, lang)
+    updateOtherLangFile(allFiles, dir, excelFilePath, lang)
   } else if (excelFilePath) {
     log(chalk.red(`${excelFilePath} 文件不存在`))
   }

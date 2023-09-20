@@ -29,7 +29,7 @@ interface Config {
       minBreakTime?: number;
       [key: string]: any;
     },
-    prettierConfig?:{},
+    prettierConfig?: {},
     excelOptions: {
       keyIndex: number;
       valueIndex: number;
@@ -97,7 +97,6 @@ export const PROJECT_CONFIG: Config = {
   },
   langMap: {
     ['en-US']: 'en',
-    ['en_US']: 'en'
   },
   zhIndexFile: `import common from './common';
   export default {

@@ -56,8 +56,8 @@ function getSpecifiedFiles(dir, includeOption?, excludeOption?): string[] {
         }
         return isIgnore
       }
-      return include() && !exclude() 
-  })
+      return include() && !exclude()
+    })
 }
 
 function readFiles(dir, match?) {
@@ -75,6 +75,7 @@ function readFiles(dir, match?) {
         }
       });
     } catch (error) {
+      console.error(error)
     }
   }
   readFile(dir)
