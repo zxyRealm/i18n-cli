@@ -16,6 +16,8 @@ import * as ts from 'typescript'
 import { readFiles } from './extract/file'
 import * as slash from 'slash2';
 import { Translate } from './translate'
+// import { parse } from '@babel/parser'
+
 const xlsx = require('node-xlsx').default
 const Progress = require('progress')
 const log = console.log
@@ -390,19 +392,37 @@ async function processTaskArray(taskArray) {
   }
 }
 
+export function getFileFormat(filename) {
+  const extension = filename?.split('.').pop().toLowerCase();
+
+  switch (extension) {
+    case 'js': return 'babel';
+    case 'jsx': return 'babel-flow';
+    case 'ts': return 'typescript';
+    case 'tsx': return 'typescript';
+    case 'css': return 'css';
+    case 'scss': return 'scss';
+    case 'md': return 'markdown';
+    case 'json': return 'json';
+    case 'html': return 'html';
+    case 'vue': return 'vue';
+    case 'yaml': return 'yaml';
+    case 'yml': return 'yaml';
+    default: return '';
+  }
+}
+
 /*
  * 使用 Prettier 格式化文件
  * @param fileContent
  */
-function prettierFile(fileContent) {
+function prettierFile(fileContent, type?) {
   const CONFIG = getProjectConfig()
   try {
     return prettier.format(fileContent, {
-      parser: 'typescript',
-      singleQuote: true,
-      fix: true,
+      parser: type || 'typescript',
       ...(CONFIG.prettierConfig || {})
-    });
+    })
   } catch (e) {
     console.error(`代码格式化报错！${e.toString()}`);
     return fileContent;

@@ -7,7 +7,7 @@ import { tsvFormatRows } from 'd3-dsv';
 const sheetOptions = { '!cols': [{ wch: 30 }, { wch: 50 }, { wch: 30 }] }
 
 // 读取 sheet 表中所有 key 值，默认第一列为 key
-export function readSheetData (filename, index = 0, type?, keyIndex = 1, valueIndex = 2) {
+export function readSheetData(filename, index = 0, type?, keyIndex = 1, valueIndex = 2) {
   if (!filename) return []
   const sheets = xlsx.parse(filename)
   const dataMap = {}
@@ -19,7 +19,7 @@ export function readSheetData (filename, index = 0, type?, keyIndex = 1, valueIn
       if (row[keyIndex]) dataMap[row[keyIndex]] = row[valueIndex]
     })
   })
-  return type === 'obj' ? dataMap :  keysList
+  return type === 'obj' ? dataMap : keysList
 }
 
 // 导出文件 key 值 对比
@@ -32,7 +32,7 @@ function sameExcel(originFile: string, targetFile: string, ...restParams: any) {
   const targetData = readSheetData(targetFile, 0, 'obj', keyIndex, valueIndex)
   // 对比后数据结果
   // 默认第二列为中文 第三列为英文，对比中文值，获取其对应的英文值，必同步到源表格中
-  let data: (string|null)[][] = [
+  let data: (string | null)[][] = [
     [`${originFile} key`, `中文`, '英文'],
   ]
   const noValueList = []
@@ -44,11 +44,11 @@ function sameExcel(originFile: string, targetFile: string, ...restParams: any) {
     }
   })
 
-  const noValueData: (string|null)[][] = noValueList.map(i => {
+  const noValueData: (string | null)[][] = noValueList.map(i => {
     return [null, i, null]
   })
 
-  data = [...data, ...noValueData ]
+  data = [...data, ...noValueData]
 
   const buffer = xlsx.build([{ data }], sheetOptions)
   const filePath = `./excel-sync.xlsx`

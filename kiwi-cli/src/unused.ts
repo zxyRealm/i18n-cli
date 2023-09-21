@@ -4,7 +4,7 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { getKiwiDir, getLangDir, traverse } from './utils';
+import { getKiwiDir, traverse } from './utils';
 
 const lookingForString = '';
 
@@ -43,7 +43,7 @@ function recursiveReadFile(fileName, text) {
     var files = fs.readdirSync(fileName).filter(file => {
       return !file.startsWith('.') && !['node_modules', 'build', 'dist'].includes(file);
     });
-    files.forEach(function(val, key) {
+    files.forEach((val) => {
       var temp = path.join(fileName, val);
       if (isDirectory(temp) && !hasText) {
         hasText = recursiveReadFile(temp, text);

@@ -18,7 +18,4 @@ yarn-error.log*
 .history/
 .cache-loader/
 
-package-lock.json
-
-
 dist/

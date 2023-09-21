@@ -1,5 +1,5 @@
 import { findTextInTs } from './extract/findChineseText';
-import { getProjectConfig, getProjectVersion, readSheetData, prettierFile } from './utils'
+import { getProjectConfig, getProjectVersion, readSheetData, prettierFile, getFileFormat } from './utils'
 import { getSpecifiedFiles, readFile, writeFile } from './extract/file';
 import { createXlsxFile } from './export'
 import * as _ from 'lodash';
@@ -47,12 +47,9 @@ function updateOtherLangFile(allTexts, dir: string, excelFilePath: string, lang:
     const newFileName = `${prePath}/${lang}${file.path.replace(prePath, '')}`
     let code = JSON.parse(file.code)
 
-    // console.log('code', code, sheetData)
-
     updateWithTranslation(code, sheetData)
 
-    // console.log('updat code', code)
-    writeFile(newFileName, prettierFile(JSON.stringify(code)))
+    writeFile(newFileName, prettierFile(JSON.stringify(code), getFileFormat(newFileName)))
   })
 }
 

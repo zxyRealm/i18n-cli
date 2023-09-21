@@ -4,11 +4,11 @@ const slash = require('slash2');
 const dirs = require('node-dir')
 const xlsx = require('node-xlsx').default
 
-function resolve (dir) {
+function resolve(dir) {
   return path.resolve(__dirname, './', dir)
 }
 
-function readFile (filename) {
+function readFile(filename) {
   return fs.readFileSync(filename, { encoding: 'utf8' })
 }
 
@@ -16,7 +16,7 @@ function readFile (filename) {
 const sheetOptions = { '!cols': [{ wch: 30 }, { wch: 50 }, { wch: 30 }] }
 
 // 读取 sheet 表中所有 key 值，默认第一列为 key
-function readSheetData (filename, index = 0) {
+function readSheetData(filename, index = 0) {
   if (!filename) return []
   const sheets = xlsx.parse(filename)
   const keysList = []

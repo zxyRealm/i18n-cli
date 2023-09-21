@@ -18,7 +18,7 @@ import { getAllMessages, getProjectConfig, traverse } from './utils';
 
 const CONFIG = getProjectConfig();
 
-function readSheetData (filename, valueIndex = 2, keyIndex = 0) {
+function readSheetData(filename, valueIndex = 2, keyIndex = 0) {
   if (!filename) return {}
   const sheets = xlsx.parse(filename)
   const keysMap = {}

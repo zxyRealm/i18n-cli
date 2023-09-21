@@ -3,7 +3,6 @@
  * @desc 项目配置文件配置信息
  */
 const fs = require('fs');
-import { Tld } from 'google-translate-open-api'
 
 export const KIWI_CONFIG_FILE = 'kiwi-config.json';
 
@@ -21,7 +20,6 @@ interface Config {
     zhLang: string;
     distLangs: string[];
     translateOptions: {
-      tld?: Tld;
       concurrentLimit: number;
       timeout: number;
       appid: string;

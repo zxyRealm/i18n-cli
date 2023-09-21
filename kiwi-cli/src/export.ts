@@ -20,13 +20,13 @@ import * as _ from 'lodash';
 const sheetHeader = (lang?: string) => {
   return [
     'key',
-     lang || '原文',
+    lang || '原文',
     '译文'
   ]
 }
 // 根据原文件目录结构生成新文件目录
-function createXlsxFile (filename, sheetData) {
-  const data = [ sheetHeader() ]
+function createXlsxFile(filename, sheetData) {
+  const data = [sheetHeader()]
   const newRootDir = '.'
   if (Array.isArray(sheetData)) {
     data.push(...sheetData)
@@ -37,7 +37,7 @@ function createXlsxFile (filename, sheetData) {
       }
     })
   }
-  
+
   const buffer = xlsx.build([{ data }], { '!cols': [{ wch: 30 }, { wch: 50 }, { wch: 30 }] }
   )
   const filePath = `${newRootDir}/${filename}.xlsx`

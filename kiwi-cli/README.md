@@ -42,7 +42,7 @@ export-*.txt
   },
   "jsTemplate": "I18n.t('{{key}}')", // js/ts 国际化替换模板
   "htmlTemplate": "$t('{{key}}')", // html 国际化替换模板; 目前仅在 vue 中使用
-   // google-translate-open-api 插件配置项
+   // 翻译插件配置项
   "translateOptions": {
       "browersUrl": "https://cors-anywhere.herokuapp.com/", // 默认在线代理地址
       "browers": true // 是否开在线代理（google翻译存在机器人检测机制，长时间使用会被禁用）

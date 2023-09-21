@@ -2,7 +2,6 @@
 
 import * as inquirer from 'inquirer';
 import { initProject } from './init';
-// import { sync } from './sync';
 import { exportMessages } from './export';
 import { importMessages } from './import';
 import { exportExcel } from './excel-export'

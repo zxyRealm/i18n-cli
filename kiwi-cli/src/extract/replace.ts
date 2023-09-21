@@ -13,7 +13,8 @@ import {
   getLangDir,
   getProjectDependencies,
   prettierFile,
-  templateTransform
+  templateTransform,
+  getFileFormat
 } from '../utils';
 import * as slash from 'slash2';
 import * as vueCompiler from 'vue-template-compiler'
@@ -80,7 +81,7 @@ export function updateLangFiles(keyValue, text, validateDuplicate, filePath, typ
     text = text.replace(/\\n/gm, '\n');
     const data = { ...obj, [fullKey]: text }
     // _.set(obj, fullKey, text);
-    fs.outputFileSync(targetFilename, prettierFile(`export default ${JSON.stringify(data, null, 2)}`));
+    fs.outputFileSync(targetFilename, prettierFile(`export default ${JSON.stringify(data, null, 2)}`, getFileFormat(targetFilename)));
   }
 }
 
@@ -135,7 +136,7 @@ function addImportToMainLangFile(newFilename, lang?: string) {
       mainContent = `import ${exportName} from './${newFilename}'\n\nexport default {\n ...${exportName},\n}`;
     }
   }
-  fs.outputFileSync(filePath, prettierFile(mainContent));
+  fs.outputFileSync(filePath, prettierFile(mainContent, getFileFormat(filePath)));
 }
 
 /**

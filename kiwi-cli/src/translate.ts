@@ -1,5 +1,4 @@
 import * as md5 from 'js-md5'
-import * as translate from 'translate'
 import * as qs from 'qs'
 const request = require('request')
 // import { getRandomStr, encodeUtf8 } from './utils'
@@ -34,7 +33,7 @@ export interface Options {
 }
 
 // 获取随机盐值
-function getRandomStr (length:number = 4): string {
+function getRandomStr(length: number = 4): string {
   let result = Math.floor(Math.random() * 90 + 10).toString()
   for (let i = 0; i < length - 2; i++) {
     let ranNum = Math.ceil(Math.random() * 25)
@@ -44,7 +43,7 @@ function getRandomStr (length:number = 4): string {
 }
 
 // api 文档  https://libretranslate.com/docs/
-export function Translate (text: string, options?: Options, delay?: number) {
+export function Translate(text: string, options?: Options, delay?: number) {
   const { appid, secretKey } = options
   const salt = getRandomStr(8)
   const signStr = appid + text + salt + secretKey
@@ -69,22 +68,22 @@ export function Translate (text: string, options?: Options, delay?: number) {
     }, (error, response, body) => {
       const time = delay
       if (error) return reject(error)
-        try {
-          const result = JSON.parse(body);
-          if (result.error_code) {
-            setTimeout(() => {
-              reject(result)
-            }, time)
-          } else {
-            const text = result.trans_result[0].dst
-            setTimeout(() => {
-              resolve(text)
-            },time)
-          }
-        } catch (error) {
-          reject(error)
-          console.error(error)
+      try {
+        const result = JSON.parse(body);
+        if (result.error_code) {
+          setTimeout(() => {
+            reject(result)
+          }, time)
+        } else {
+          const text = result.trans_result[0].dst
+          setTimeout(() => {
+            resolve(text)
+          }, time)
         }
+      } catch (error) {
+        reject(error)
+        console.error(error)
+      }
     })
   })
 }

@@ -19,7 +19,6 @@ yarn-error.log*
 .cache-loader/
 .vscode
 
-package-lock.json
 .kiwi
 *.xlsx
 export-*

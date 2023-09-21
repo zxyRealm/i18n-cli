@@ -51,7 +51,7 @@ function syncKeys() {
           }
         })
       })
-  })
+    })
 }
 
 
@@ -68,7 +68,7 @@ function update(file?, lang?) {
       }
     })
   })
-  
+
 }
 
 export { update }
