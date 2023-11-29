@@ -53,7 +53,7 @@ program
   .option('--export [file] [lang]', '导出未翻译的文案')
   .option('--excel [langDir] [lang]', '导出 excel')
   .option('--compare [originFile] [targetFile]', '对比导出 key 差异')
-  .option('--same [originFile] [targetFile] [targetFileValueIndex] [targetFileKeyIndex]', '同步excel中相同内容')
+  .option('--same [originFile] [targetFile] [targetValueIndex] [targetKeyIndex]', '同步excel中相同内容, 在目标文件(已翻译的文件)查找并匹配源文件(待翻译文件)待翻译的内容, 同步后生成 export-async.xlsx 文件')
   .option('--update [file] [lang]', '更新语言包')
   .option('--json [path] [langOriginFile] [lang]', 'json 数据中文扫描')
   .option('--dedup', '提取重复文案')

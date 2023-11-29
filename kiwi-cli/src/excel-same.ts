@@ -40,12 +40,12 @@ function sameExcel(originFile: string, targetFile: string, ...restParams: any) {
     if (targetData[item[1]]) {
       data.push([item[0], item[1], targetData[item[1]]])
     } else {
-      noValueList.push(item[1])
+      noValueList.push(item)
     }
   })
 
-  const noValueData: (string | null)[][] = noValueList.map(i => {
-    return [null, i, null]
+  const noValueData: (string | null)[][] = noValueList.map(item => {
+    return [item[0], item[1], null]
   })
 
   data = [...data, ...noValueData]
