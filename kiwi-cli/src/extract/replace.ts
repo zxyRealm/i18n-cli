@@ -20,8 +20,6 @@ import * as slash from 'slash2';
 import * as vueCompiler from 'vue-template-compiler'
 const chalk = require('chalk')
 const log = console.log
-const CONFIG = getProjectConfig();
-const srcLangDir = getLangDir(CONFIG.srcLang);
 
 // 更新语言包文件
 /*
@@ -31,6 +29,9 @@ const srcLangDir = getLangDir(CONFIG.srcLang);
 */
 
 export function updateLangFiles(keyValue, text, validateDuplicate, filePath, type?: string, lang?: string) {
+  const CONFIG = getProjectConfig();
+  const srcLangDir = getLangDir(CONFIG.srcLang);
+
   const packageJson = getProjectDependencies()
   // 是否使用 typescript
   const isTS = packageJson.typescript
@@ -94,6 +95,9 @@ function generateNewLangFile(key, value) {
 
 // 新增文件添加到 index 文件, 并自动 import & export
 function addImportToMainLangFile(newFilename, lang?: string) {
+  const CONFIG = getProjectConfig();
+  const srcLangDir = getLangDir(CONFIG.srcLang);
+
   const isTs = getProjectDependencies().typescript
   let mainContent = '';
   const filePath = `${getLangDir(lang) || srcLangDir}/index.${isTs ? 'ts' : 'js'}`
@@ -144,6 +148,8 @@ function addImportToMainLangFile(newFilename, lang?: string) {
  * @param filePath 文件路径
  */
 function hasImportI18N(filePath) {
+  const CONFIG = getProjectConfig();
+
   const code = readFile(filePath);
   if (code.indexOf(CONFIG.importI18N) > -1) {
     return true
@@ -195,6 +201,7 @@ function hasImportI18N(filePath) {
  */
 function createImportI18N(filePath) {
   const code = readFile(filePath);
+  const CONFIG = getProjectConfig();
   const ast = ts.createSourceFile('', code, ts.ScriptTarget.ES2015, true, ts.ScriptKind.TSX);
 
   // const isTsFile = _.endsWith(filePath, '.ts') || _.endsWith(filePath, '.js');
@@ -258,6 +265,7 @@ function replaceAndUpdate(filePath, arg, val, validateDuplicate) {
 // 替换 Vue 文件中 key 值
 function replaceInVue(filePath, arg, val) {
   const code = readFile(filePath)
+  const CONFIG = getProjectConfig();
   // let finalReplaceText = arg.text
   const { start, end } = arg.range
   const template = CONFIG.jsTemplate || `i18n.t('{{key}}')`
@@ -290,6 +298,7 @@ function replaceInVue(filePath, arg, val) {
 
 // 替换 jsx 语法文件中 key 值
 function replaceInJsx(filePath, arg, val, callback) {
+  const CONFIG = getProjectConfig();
   const code = readFile(filePath)
   const { start, end } = arg.range
   let finalReplaceVal = val

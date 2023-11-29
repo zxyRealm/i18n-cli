@@ -8,12 +8,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getProjectConfig, flatten } from '../utils';
 import { readFile } from './file'
-const CONFIG = getProjectConfig();
 
 const I18N_GLOB = (lang?: string) => {
+  const CONFIG = getProjectConfig();
   const LANG_DIR = path.resolve(CONFIG.kiwiDir, lang || CONFIG.srcLang);
   return `${LANG_DIR}/**/*.{ts,js}`;
-} 
+}
 
 /**
  * 获取对应文件的语言
@@ -63,7 +63,7 @@ function getI18N(lang?: string) {
       .split('/')
       .pop()
       .replace(/\.(tsx?|vue|js)$/, '');
-    
+
     if (filename.replace(/\.(tsx?|vue|js)/, '') === 'index') {
       return prev;
     }

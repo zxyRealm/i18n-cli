@@ -55,7 +55,7 @@ program
   .option('--compare [originFile] [targetFile]', '对比导出 key 差异')
   .option('--same [originFile] [targetFile] [targetValueIndex] [targetKeyIndex]', '同步excel中相同内容, 在目标文件(已翻译的文件)查找并匹配源文件(待翻译文件)待翻译的内容, 同步后生成 export-async.xlsx 文件')
   .option('--update [file] [lang]', '更新语言包')
-  .option('--json [path] [langOriginFile] [lang]', 'json 数据中文扫描')
+  .option('--json [path] [langOriginFile] [lang]', 'json 数据中文扫描')
   .option('--dedup', '提取重复文案')
   .option('--sync', '同步各种语言的文案')
   .option('--mock', '使用 Google 翻译')
@@ -130,15 +130,9 @@ if (program.dedup) {
   })
 }
 
-// export all language excel file
-program
-  .command('excel <langDir>')
-  .description('导出 excel')
+program.command('excel <langDir>').description('导出 excel')
   .option('-d --dir [langDir]', '导出文件路径地址')
   .option('-l --lang [lang]', '导出语言文件类型')
-  .action((cmd) => {
-    console.log('cmd', cmd)
-  })
 
 if (program.excel) {
   spining('导出 excel', () => {
@@ -148,6 +142,8 @@ if (program.excel) {
 
 if (program.import) {
   spining('导入翻译文案', () => {
+
+    console.log('program.import ---', program.import, program.args)
     if (program.import === true || program.args.length === 0) {
       console.log('请按格式输入：--import [file] [lang]');
     } else if (program.args) {
@@ -195,6 +191,7 @@ if (program.mock) {
 }
 
 if (program.extract) {
+  console.log('program extract -----', program.extract)
   if (program.extract === true) {
     extractAll();
   } else {
@@ -202,6 +199,8 @@ if (program.extract) {
   }
 }
 
+
+console.log('program', program)
 
 // output help information on unknown commands
 program
@@ -216,6 +215,8 @@ program
 program.on('--help', () => {
   console.log(`  Run ${chalk.cyan(`kiwi <command> --help`)} for detailed usage of given command.`)
 })
+
+
 
 function suggestCommands(unknownCommand) {
   const availableCommands = program.commands.map(cmd => cmd._name)
@@ -234,21 +235,4 @@ function suggestCommands(unknownCommand) {
   }
 }
 
-function camelize(str) {
-  return str.replace(/-(\w)/g, (_, c) => c ? c.toUpperCase() : '')
-}
 
-// commander passes the Command object itself as options,
-// extract only actual options into a fresh object.
-function cleanArgs(cmd) {
-  const args = {}
-  cmd.options.forEach(o => {
-    const key = camelize(o.long.replace(/^--/, ''))
-    // if an option is not present and Command has a method with the same name
-    // it should not be copied
-    if (typeof cmd[key] !== 'function' && typeof cmd[key] !== 'undefined') {
-      args[key] = cmd[key]
-    }
-  })
-  return args
-}

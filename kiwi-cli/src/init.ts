@@ -58,6 +58,7 @@ function createCnFile() {
 }
 
 function initProject(existDir?: string) {
+
   /** 初始化配置文件夹 */
   if (existDir) {
     if (!fs.existsSync(existDir)) {

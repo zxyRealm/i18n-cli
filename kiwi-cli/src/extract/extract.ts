@@ -17,12 +17,12 @@ import {
 import { replaceAndUpdate, hasImportI18N, createImportI18N } from './replace';
 const chalk = require('chalk')
 const log = console.log
-const CONFIG = getProjectConfig();
 
 /**
  * 递归匹配项目中所有的代码的中文
  */
 function findAllChineseText(dir: string) {
+  const CONFIG = getProjectConfig();
   const files = getSpecifiedFiles(dir, CONFIG.include, CONFIG.exclude);
   const filterFiles = files.filter(file => {
     return file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.vue') || file.endsWith('.js');

@@ -9,14 +9,13 @@ import {
   PROJECT_CONFIG,
   KIWI_CONFIG_FILE,
   Options,
-  translateResponseType
+  translateResponseType,
 } from './const';
 import * as prettier from 'prettier'
 import * as ts from 'typescript'
 import { readFiles } from './extract/file'
 import * as slash from 'slash2';
 import { Translate } from './translate'
-// import { parse } from '@babel/parser'
 
 const xlsx = require('node-xlsx').default
 const Progress = require('progress')

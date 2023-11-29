@@ -8,7 +8,7 @@
       "es2016.array.include"
     ],
     "skipLibCheck": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "rootDir": "src"
   },
   "exclude": [

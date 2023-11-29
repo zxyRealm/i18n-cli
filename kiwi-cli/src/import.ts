@@ -16,21 +16,6 @@ import * as _ from 'lodash';
 import { tsvParseRows } from 'd3-dsv';
 import { getAllMessages, getProjectConfig, traverse } from './utils';
 
-const CONFIG = getProjectConfig();
-
-function readSheetData(filename, valueIndex = 2, keyIndex = 0) {
-  if (!filename) return {}
-  const sheets = xlsx.parse(filename)
-  const keysMap = {}
-  sheets.forEach(sheet => {
-    const { data } = sheet
-    data.forEach(row => {
-      keysMap[row[keyIndex]] = row[valueIndex]
-    })
-  })
-
-  return keysMap
-}
 
 function getMessagesToImport(file: string) {
   const content = fs.readFileSync(file, { encoding: 'utf8' }).toString();
@@ -61,6 +46,8 @@ function getMessagesToImport(file: string) {
 }
 
 function writeMessagesToFile(messages: any, file: string, lang: string) {
+  const CONFIG = getProjectConfig();
+
   const kiwiDir = CONFIG.kiwiDir;
   const srcMessages = require(path.resolve(kiwiDir, CONFIG.srcLang, file)).default;
   const dstFile = path.resolve(kiwiDir, lang, file);
@@ -73,8 +60,9 @@ function writeMessagesToFile(messages: any, file: string, lang: string) {
 }
 
 function importMessages(file: string, lang: string) {
+  const CONFIG = getProjectConfig();
+
   let messagesToImport = getMessagesToImport(file);
-  // let messagesToImport = readSheetData(file);
   const allMessages = getAllMessages(CONFIG.srcLang);
   messagesToImport = _.pickBy(messagesToImport, (message, key) => allMessages.hasOwnProperty(key));
   const keysByFiles = _.groupBy(Object.keys(messagesToImport), key => key.split('.')[0]);

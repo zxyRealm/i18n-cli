@@ -11,12 +11,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as _ from 'lodash';
 import { traverse, getProjectConfig, getLangDir, getProjectDependencies } from './utils';
-const CONFIG = getProjectConfig();
 
 /**
  * 获取中文文案文件的翻译，优先使用已有翻译，若找不到则使用 google 翻译
  * */
 function getTranslations(file, toLang) {
+  const CONFIG = getProjectConfig();
   const translations = {};
   const fileNameWithoutExt = path.basename(file).split('.')[0];
   const srcLangDir = getLangDir(CONFIG.srcLang);
@@ -42,6 +42,7 @@ function getTranslations(file, toLang) {
  * 将翻译写入文件
  * */
 function writeTranslations(file, toLang, translations) {
+  const CONFIG = getProjectConfig();
   const fileNameWithoutExt = path.basename(file).split('.')[0];
   const srcLangDir = getLangDir(CONFIG.srcLang);
   const srcFile = path.resolve(srcLangDir, file);
@@ -87,6 +88,8 @@ function translateFile(file, toLang) {
  * 翻译所有文件
  */
 function sync(callback?) {
+  const CONFIG = getProjectConfig();
+
   const srcLangDir = getLangDir(CONFIG.srcLang);
   const dependencies = getProjectDependencies()
 

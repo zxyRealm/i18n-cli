@@ -88,7 +88,7 @@ export const PROJECT_CONFIG: Config = {
     },
     prettierConfig: {},
     importI18N: `import i18n from '@/locale';`,
-    exclude: ['node_modules'],
+    exclude: ['node_modules', '.Trash'],
     include: ['src'],
     jsTemplate: '',
     htmlTemplate: ''
@@ -107,3 +107,4 @@ export const PROJECT_CONFIG: Config = {
 
 const DOUBLE_BYTE_REGEX = /[\u4e00-\u9fa5]/g
 export { DOUBLE_BYTE_REGEX }
+

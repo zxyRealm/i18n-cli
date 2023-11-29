@@ -7,7 +7,6 @@ import * as fs from 'fs'
 import { tsvFormatRows } from 'd3-dsv';
 const chalk = require('chalk')
 const log = console.log;
-const CONFIG = getProjectConfig();
 
 // 导出中文 excel
 function exportTextsExcel(allTexts) {
@@ -91,6 +90,7 @@ function replaceInJson(code, arg, val) {
 
 // 扫描 json 文件中的中文文案
 function ExtractJsonInText(dir: string, excelFilePath?: string, lang?: string) {
+  const CONFIG = getProjectConfig();
   const start = Date.now()
   // const langPath = `${dir}/${CONFIG.srcLang}`
   const files = getSpecifiedFiles(dir, CONFIG.include);
