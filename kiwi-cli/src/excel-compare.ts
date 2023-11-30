@@ -1,16 +1,5 @@
 const fs = require('fs-extra')
-const path = require('path')
-const slash = require('slash2');
-const dirs = require('node-dir')
 const xlsx = require('node-xlsx').default
-
-function resolve(dir) {
-  return path.resolve(__dirname, './', dir)
-}
-
-function readFile(filename) {
-  return fs.readFileSync(filename, { encoding: 'utf8' })
-}
 
 // 列宽设置
 const sheetOptions = { '!cols': [{ wch: 30 }, { wch: 50 }, { wch: 30 }] }

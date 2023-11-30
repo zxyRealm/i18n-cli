@@ -116,7 +116,7 @@ if (program.json) {
 if (program.same) {
   spining('excel 相同内容同步', () => {
     if (program.same === true || program.args.length === 0) {
-      console.log('请按格式输入：--same originFile targetFile [targetFileValueIndex] [targetFileKeyIndex]');
+      console.log('请按格式输入：--same originFile targetFile [targetValueIndex] [targetKeyIndex]');
     } else if (program.args) {
       const [targetFile, ...rest] = program.args
       sameExcel(program.same, targetFile, ...rest);
@@ -143,7 +143,6 @@ if (program.excel) {
 if (program.import) {
   spining('导入翻译文案', () => {
 
-    console.log('program.import ---', program.import, program.args)
     if (program.import === true || program.args.length === 0) {
       console.log('请按格式输入：--import [file] [lang]');
     } else if (program.args) {
@@ -191,7 +190,6 @@ if (program.mock) {
 }
 
 if (program.extract) {
-  console.log('program extract -----', program.extract)
   if (program.extract === true) {
     extractAll();
   } else {
@@ -199,8 +197,6 @@ if (program.extract) {
   }
 }
 
-
-console.log('program', program)
 
 // output help information on unknown commands
 program

@@ -10,10 +10,6 @@ import {
 const chalk = require('chalk')
 const log = console.log
 
-function readFile(filename: string) {
-  return fs.readFileSync(filename, { encoding: 'utf8' })
-}
-
 // 统一表头格式
 const sheetHeader = (lang?: string) => {
   return [

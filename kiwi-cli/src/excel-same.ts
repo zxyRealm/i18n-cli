@@ -1,7 +1,6 @@
 const fs = require('fs-extra')
 const path = require('path')
 const xlsx = require('node-xlsx').default
-import { tsvFormatRows } from 'd3-dsv';
 
 // 列宽设置
 const sheetOptions = { '!cols': [{ wch: 30 }, { wch: 50 }, { wch: 30 }] }
