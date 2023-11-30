@@ -34,7 +34,7 @@ function getLangJson(fileName) {
   const langList = fileContent.match(/export\s*default\s*({[\s\S]+);?$/)
   if (!langList) return {}
   let obj = langList[1];
-  obj = obj.replace(/\s*;\s*$/, '');
+  obj = obj.replace(/\s*;\s*$/, '').replace(/\.\.\.[\w]*,/g, '');
   let jsObj = {};
   try {
     jsObj = eval('(' + obj + ')');
