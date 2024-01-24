@@ -29,7 +29,7 @@ function exportTextsExcel(allTexts) {
   if (sheetData.length > 1) {
     createXlsxFile(`export-json_${getProjectVersion() || ''}`, sheetData)
     fs.writeFileSync(`export-json.txt`, content);
-    log(chalk.green(`excel 导出成功, 总计 ${total} 条，去重后${sheetData.length - 1} 条`))
+    log(chalk.green(`excel 导出成功, 总计 ${total} 条，去重后${sheetData.length} 条`))
   } else {
     log(chalk.yellow(`未检测到中文文本`))
   }
@@ -40,10 +40,13 @@ function updateOtherLangFile(allTexts, dir: string, excelFilePath: string, lang:
   // 读取语言 excel 生成 以中文为 key 的 map 对象
   const sheetData = readSheetData(excelFilePath);
 
+  const dirList = dir.split('/')
+  const newDir = dirList.slice(0, dirList.length - 1).join('/')
+
   const prePath = dir.replace(/(.*)\/$/, '$1')
   allTexts.forEach((file) => {
     // 更新语言文件的文件名
-    const newFileName = `${prePath}/${lang}${file.path.replace(prePath, '')}`
+    const newFileName = `${newDir}/${lang}${file.path.replace(prePath, '')}`
     let code = JSON.parse(file.code)
 
     updateWithTranslation(code, sheetData)
@@ -52,7 +55,6 @@ function updateOtherLangFile(allTexts, dir: string, excelFilePath: string, lang:
   })
 }
 
-let num = 0
 
 // 处理字符串
 function processString(str, dictionary) {
@@ -80,22 +82,12 @@ function updateWithTranslation(obj, dictionary) {
   }
 }
 
-// 替换 json 中的中文
-function replaceInJson(code, arg, val) {
-  const { start, end } = arg.range
-  let finalReplaceVal = `'${val.replace(/[\\"']/g, '\\$&')}'`
-  return `${code.slice(0, start)}${finalReplaceVal}${code.slice(end)}`;
-}
-
 
 // 扫描 json 文件中的中文文案
 function ExtractJsonInText(dir: string, excelFilePath?: string, lang?: string) {
   const CONFIG = getProjectConfig();
-  const start = Date.now()
-  // const langPath = `${dir}/${CONFIG.srcLang}`
   const files = getSpecifiedFiles(dir, CONFIG.include);
   const filterFiles = files.filter(file => {
-    // file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.vue') || file.endsWith('.js') ||
     return file.endsWith('.json');
   });
   // 目录下所有中文文案
@@ -119,7 +111,7 @@ function ExtractJsonInText(dir: string, excelFilePath?: string, lang?: string) {
     }]
   }, [])
 
-  // console.log('files', allFiles)
+  console.log('json file dir', dir)
 
   if (!allTexts.length) {
     return log(chalk.yellow(`未发现中文文案`))
@@ -127,10 +119,20 @@ function ExtractJsonInText(dir: string, excelFilePath?: string, lang?: string) {
   // 将中文导出到 excel
   !excelFilePath && exportTextsExcel(allTexts)
   // 扁平化后的数组列表
-  if (excelFilePath && fs.existsSync(excelFilePath)) {
+  if (excelFilePath && fs.existsSync(excelFilePath) && CONFIG.distLangs.includes(lang)) {
     updateOtherLangFile(allFiles, dir, excelFilePath, lang)
-  } else if (excelFilePath) {
+  }
+
+  if (excelFilePath && !fs.existsSync(excelFilePath)) {
     log(chalk.red(`${excelFilePath} 文件不存在`))
+  }
+
+  if (excelFilePath && fs.existsSync(excelFilePath)) {
+    if (!lang) {
+      log(chalk.red(`语言类型不存在`))
+    } else if (!CONFIG.distLangs.includes(lang)) {
+      log(chalk.red(`不存在的语言类型 ${lang}`))
+    }
   }
 }
 

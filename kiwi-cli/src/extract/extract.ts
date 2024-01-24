@@ -50,44 +50,8 @@ function findAllChineseText(dir: string) {
   return allTexts;
 }
 
-// promise 链式调用
-function getAllAsyncResults(list, func, formatArgs = val => val) {
-  return new Promise((resolve, reject) => {
-    let results = []
-    let index = 0
-    let lastTime = Date.now()
-    const recursive = (i) => {
-      list[i] && func(formatArgs(list[i])).then(res => {
-        results.push(res)
-        if (i === list.length - 1) {
-          resolve(results)
-        } else {
-          index++
-          const delayTime = formatArgs(list[index]).length > 25 ? 3000 : 1200
-          setTimeout(() => {
-            lastTime = Date.now()
-            recursive(index)
-          }, delayTime)
-        }
-      }).catch(e => {
-        reject(e)
-      })
-    }
-    recursive(0)
-  })
-}
 
-// 将对象的 key: value 颠倒
-function reverseObjectKeyValue(obj) {
-  if (!obj) return {}
-  const newObject = {}
-  return Object.keys(obj).reduce((pre, curr) => {
-    return {
-      ...pre,
-      [obj[curr]]: curr
-    }
-  }, {})
-}
+
 
 // 截取要翻译成 key 的中文
 const formatText = (txt) => {

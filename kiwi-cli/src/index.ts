@@ -53,9 +53,9 @@ program
   .option('--export [file] [lang]', '导出未翻译的文案')
   .option('--excel [langDir] [lang]', '导出 excel')
   .option('--compare [originFile] [targetFile]', '对比导出 key 差异')
-  .option('--same [originFile] [targetFile] [targetValueIndex] [targetKeyIndex]', '同步excel中相同内容, 在目标文件(已翻译的文件)查找并匹配源文件(待翻译文件)待翻译的内容, 同步后生成 export-async.xlsx 文件')
+  .option('--same [originFile] [targetFile] [targetValueIndex] [targetKeyIndex]', '同步excel中相同内容,在目标文件(已翻译的文件)查找并匹配源文件(待翻译文件)待翻译的内容,同步后生成 export-async.xlsx 文件')
   .option('--update [file] [lang]', '更新语言包')
-  .option('--json [path] [langOriginFile] [lang]', 'json 数据中文扫描')
+  .option('--json [path] [langFile] [lang]', '--json [path] 扫描指定目录下所有的 .json 文件,提取文件中所有中文文案,同样可以通过此命令检测翻译后文件中是否存在未法翻译的中文。--json [path] [langFile] [lang] 拷贝中文目录中 json 文件,根据翻译文件及配置文件中 keyIndex、valueIndex 来更新指定语言文件，')
   .option('--dedup', '提取重复文案')
   .option('--sync', '同步各种语言的文案')
   .option('--mock', '使用 Google 翻译')
@@ -102,10 +102,10 @@ if (program.compare) {
 if (program.json) {
   spining('JSON 文件中文文本扫描', () => {
     if (program.json === true) {
-      console.log('请按格式输入：--json [path] [originFile] [lang]');
+      console.log('请按格式输入：--json [path] [langFile] [lang]');
     } else {
       if (program.args[0] && !program.args[1]) {
-        console.log(chalk.red(`请按格式输入：--json [path] [originFile] [lang]`))
+        console.log(chalk.red(`请按格式输入：--json [path] [langFile] [lang]`))
       }
       JsonScanner(program.json, ...program.args);
     }

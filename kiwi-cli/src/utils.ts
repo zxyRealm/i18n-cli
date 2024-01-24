@@ -263,17 +263,28 @@ function readSheetData(filename) {
   const config = getProjectConfig()
   const { keyIndex = 0, valueIndex = 1 } = { ...config.excelOptions }
   const sheets = xlsx.parse(filename)
-  const keysObject = {}
+
+  const keysObject = new Map()
+
   sheets.forEach(sheet => {
     const { data } = sheet
     data.slice(1).forEach(row => {
-      if (keysObject[row[keyIndex]] !== undefined) {
-        console.error(`${keysObject[row[keyIndex]]} key 已存在`)
+      // 表格中的中文 key 会存在一些转义的空格字符，此处需要统一一下
+      try {
+
+        const key = (row[keyIndex] || '').replace(/[\u00A0]/g, '\u0020')
+        if (keysObject.get(key)) {
+          log(`${chalk.blue(key)} ${chalk.red(' 已存在')}`)
+        }
+        keysObject.set(key, row[valueIndex])
+
+      } catch (e) {
+        console.log('key error --------', row[keyIndex])
       }
-      keysObject[row[keyIndex]] = row[valueIndex]
     })
   })
-  return keysObject
+
+  return Object.fromEntries(keysObject)
 }
 
 // 读取 sheet 表中所有 key 值，默认第一列为 key
@@ -291,7 +302,7 @@ export function readSheetDataArray(filename) {
       const val = [row[keyIndex], row[valueIndex]]
 
       if (isExist) {
-        console.error(`${row[keyIndex]} key 已存在`)
+        log(`${chalk.blue(row[keyIndex])} ${chalk.red('key 已存在')}`)
       } else {
         keysArray.push(val)
       }
@@ -315,7 +326,7 @@ function getProjectVersion() {
 *@param {number} start 截取文本的其实位置
 */
 function checkTextIsIgnore(code: string, start: number): boolean {
-  return code && (code.substr(start - 20, 20).indexOf('/* ignore */') > -1 || code.substr(start - 20, 20).indexOf('<!-- ignore -->') > -1)
+  return code && (code.substring(start - 20, start).indexOf('/* ignore */') > -1 || code.substring(start - 20, start).indexOf('<!-- ignore -->') > -1)
 }
 
 // // 获取随机盐值
@@ -379,17 +390,17 @@ function getProjectDependencies() {
   }
 }
 
-// 线程式处理异步任务数组
-async function processTaskArray(taskArray) {
-  try {
-    for (const item of taskArray) {
-      await item?.();
-    }
-    return Promise.resolve();
-  } catch (error) {
-    return Promise.reject(error)
-  }
-}
+// // 线程式处理异步任务数组
+// async function processTaskArray(taskArray) {
+//   try {
+//     for (const item of taskArray) {
+//       await item?.();
+//     }
+//     return Promise.resolve();
+//   } catch (error) {
+//     return Promise.reject(error)
+//   }
+// }
 
 export function getFileFormat(filename) {
   const extension = filename?.split('.').pop().toLowerCase();
@@ -472,7 +483,7 @@ export {
   checkTextIsIgnore,
   readProjectFile,
   getProjectDependencies,
-  processTaskArray,
+  // processTaskArray,
   prettierFile,
   progressBar,
   templateTransform

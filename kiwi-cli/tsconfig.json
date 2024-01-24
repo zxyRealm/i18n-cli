@@ -5,6 +5,7 @@
     "outDir": "dist",
     "lib": [
       "es6",
+      "ESNext",
       "es2016.array.include"
     ],
     "skipLibCheck": true,
