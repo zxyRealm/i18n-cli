@@ -42,48 +42,93 @@ function getRandomStr(length: number = 4): string {
   return result
 }
 
-// api 文档  https://libretranslate.com/docs/
-export function Translate(text: string, options?: Options, delay?: number) {
-  const { appid, secretKey } = options
-  const salt = getRandomStr(8)
-  const signStr = appid + text + salt + secretKey
-  const sign = md5(signStr)
-  const params = {
-    q: text,
-    engine: 'libre',
-    from: 'auto',
-    to: 'en',
-    appid,
-    salt,
-    sign,
-    ...options
+// 添加队列处理类
+class TranslationQueue {
+  private queue: Array<{
+    text: string;
+    options: Options;
+    resolve: (value: any) => void;
+    reject: (reason?: any) => void;
+  }> = [];
+  private isProcessing = false;
+  private delay: number;
+
+  constructor(delay: number = 1000) {
+    this.delay = delay;
   }
-  return new Promise((resolve, reject) => {
-    request({
-      url: `http://api.fanyi.baidu.com/api/trans/vip/translate?${qs.stringify(params)}`,
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json'
+
+  async add(text: string, options: Options): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.queue.push({ text, options, resolve, reject });
+      if (!this.isProcessing) {
+        this.processQueue();
       }
-    }, (error, response, body) => {
-      const time = delay
-      if (error) return reject(error)
-      try {
-        const result = JSON.parse(body);
-        if (result.error_code) {
-          setTimeout(() => {
-            reject(result)
-          }, time)
-        } else {
-          const text = result.trans_result[0].dst
-          setTimeout(() => {
-            resolve(text)
-          }, time)
+    });
+  }
+
+  private async processQueue() {
+    if (this.queue.length === 0) {
+      this.isProcessing = false;
+      return;
+    }
+
+    this.isProcessing = true;
+    const { text, options, resolve, reject } = this.queue.shift()!;
+
+    try {
+      const { appid, secretKey } = options;
+      const salt = getRandomStr(8);
+      const signStr = appid + text + salt + secretKey;
+      const sign = md5(signStr);
+      const params = {
+        q: text,
+        engine: 'libre',
+        from: 'auto',
+        to: 'en',
+        appid,
+        salt,
+        sign,
+        ...options
+      };
+
+      request({
+        url: `http://api.fanyi.baidu.com/api/trans/vip/translate?${qs.stringify(params)}`,
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
         }
-      } catch (error) {
-        reject(error)
-        console.error(error)
-      }
-    })
-  })
+      }, async (error, response, body) => {
+        if (error) {
+          reject(error);
+        } else {
+          try {
+            const result = JSON.parse(body);
+            if (result.error_code) {
+              reject(result);
+            } else {
+              resolve(result.trans_result[0].dst);
+            }
+          } catch (error) {
+            reject(error);
+            console.error(error);
+          }
+        }
+
+        // 处理延时后继续处理队列
+        await new Promise(resolve => setTimeout(resolve, this.delay));
+        this.processQueue();
+      });
+    } catch (error) {
+      reject(error);
+      this.processQueue();
+    }
+  }
+}
+
+// 创建翻译队列实例
+const translationQueue = new TranslationQueue();
+
+// 修改后的 Translate 函数
+export function Translate(text: string, options?: Options, delay: number = 1000) {
+  return translationQueue.add(text, options || { appid: '', secretKey: '' });
 }

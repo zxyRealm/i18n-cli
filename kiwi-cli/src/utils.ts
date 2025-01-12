@@ -151,31 +151,15 @@ function withTimeout(promise, ms, text) {
 /*
  * 使用google翻译
  */
-function translateText(text, toLang) {
+function translateText(text: string, toLang: string): Promise<string> {
   const CONFIG = getProjectConfig();
   const timeout = CONFIG.translateOptions.timeout
   const options: Options = {
     to: PROJECT_CONFIG.langMap[toLang] || 'en',
     ...CONFIG.translateOptions
   };
-  const startTime = Date.now();
-  const minBreakTime = Number(CONFIG.translateOptions.minBreakTime) || 1500;
-  const delayFun = (callback) => {
-    const breakTime = Date.now() - startTime;
-    const delay = breakTime < minBreakTime ? minBreakTime - breakTime : 0;
-    setTimeout(() => {
-      callback && callback()
-    }, delay)
-  }
-  return new Promise((resolve, reject) => {
-    Translate(text, options).then((res: translateResponseType) => {
-      delayFun(() => resolve(res))
-    }).catch(error => {
-      log(chalk.red(error))
-      log('translate error', chalk.red(`error code ${error.errno || error.error_code}`, error.errmsg || error.error_msg))
-      delayFun(() => reject(error))
-    });
-  })
+
+  return Translate(text, options, timeout)
 }
 // 查询 value 值与当前 text 相同的 key
 function findMatchKey(langObj, text) {

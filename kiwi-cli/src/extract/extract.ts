@@ -112,7 +112,7 @@ function extractAll(dirPath?: string) {
                   })}`;
                   // 翻译后文本
                   // let englishText;
-                  const englishText = await translateText(formatText(curr.text), 'en').catch(() => { }) as string;
+                  const englishText = await translateText(formatText(curr.text), 'en');
 
                   // 驼峰格式转换
                   const handleText = englishText ? _.camelCase(englishText) : uuidKey;
